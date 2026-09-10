@@ -51,10 +51,12 @@ button {
   display: none;
 }
 .side-drawer::backdrop {
+  animation: side-drawer-backdrop-enter 240ms cubic-bezier(0.2, 0.7, 0, 1);
   background: rgb(0 0 0 / 35%);
 }
 .side-drawer-panel {
-  animation: side-drawer-enter 180ms ease-out;
+  animation: side-drawer-enter 240ms cubic-bezier(0.2, 0.7, 0, 1);
+  will-change: transform;
 }
 @keyframes side-drawer-enter {
   from {
@@ -64,8 +66,33 @@ button {
     transform: translateX(0);
   }
 }
+.side-drawer.is-closing::backdrop {
+  animation: side-drawer-backdrop-leave 240ms ease-in forwards;
+}
+.side-drawer.is-closing .side-drawer-panel {
+  animation: side-drawer-leave 240ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+@keyframes side-drawer-leave {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes side-drawer-backdrop-enter {
+  from {
+    background: rgb(0 0 0 / 0%);
+  }
+  to {
+    background: rgb(0 0 0 / 35%);
+  }
+}
+@keyframes side-drawer-backdrop-leave {
+  to {
+    background: rgb(0 0 0 / 0%);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .side-drawer-panel {
+  .side-drawer-panel,
+  .side-drawer::backdrop {
     animation: none;
   }
 }

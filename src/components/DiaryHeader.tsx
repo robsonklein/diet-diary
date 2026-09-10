@@ -1,4 +1,4 @@
-import { CalendarDays, Leaf } from "lucide-react";
+import { CalendarDays, Info, Leaf } from "lucide-react";
 import { formatDate } from "@/utils/export";
 import { localDate } from "@/lib/diary";
 
@@ -21,18 +21,32 @@ export function DiaryHeader({ date }: { date: string }) {
           Diário alimentar
         </h1>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-base-content/60">
-          Registre suas refeições diárias e acompanhe seu progresso nutricional
-          de forma prática e eficiente.
+          Registre suas refeições diárias de forma prática e eficiente.
         </p>
-        <div className="mt-6 flex items-center gap-2 text-sm">
+        <div className="mt-6 flex items-center gap-2.5 border-y border-y-gray-300 py-3">
           <CalendarDays size={17} className="text-primary" />
-          <span className="font-semibold">
+          <span className="text-base font-bold tracking-tight">
             {date === localDate() ? "Hoje" : "Registro salvo"}
           </span>
-          <span className="text-base-content/35">/</span>
-          <time dateTime={date} className="text-base-content/65">
+          <span className="text-base-content/35">--</span>
+          <time
+            dateTime={date}
+            className="text-base font-semibold text-base-content/75"
+          >
             {formatDate(date)}
           </time>
+          <div
+            className="tooltip tooltip-bottom -top-0.5"
+            data-tip="Seu diário é salvo automaticamente neste navegador. Você pode fechar e voltar depois. Exporte uma cópia para guardar ou compartilhar."
+          >
+            <button
+              type="button"
+              className="btn btn-ghost btn-circle btn-xs text-primary"
+              aria-label="Como o diário é salvo"
+            >
+              <Info size={16} />
+            </button>
+          </div>
         </div>
       </header>
     </>

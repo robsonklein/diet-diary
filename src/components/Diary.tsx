@@ -71,21 +71,15 @@ export function Diary() {
   return (
     <main className="mx-auto min-h-dvh max-w-2xl px-5 pb-6 sm:px-8">
       <DiaryHeader date={day.date} />
-      <div
-        role={storageError ? "alert" : undefined}
-        className={`mb-7 flex items-start gap-2.5 rounded-xl p-3.5 text-xs leading-relaxed ${storageError ? "bg-warning/15 text-base-content" : "bg-primary/6 text-base-content/65"}`}
-      >
-        <Info size={17} className="mt-0.5 shrink-0 text-primary" />
-        <p>
-          {storageError || (
-            <>
-              Seu diário é salvo automaticamente neste navegador. Você pode
-              fechar e voltar depois. Exporte uma cópia para guardar ou
-              compartilhar.
-            </>
-          )}
-        </p>
-      </div>
+      {storageError && (
+        <div
+          role="alert"
+          className="mb-7 flex items-start gap-2.5 rounded-xl bg-warning/15 p-3.5 text-xs leading-relaxed text-base-content"
+        >
+          <Info size={17} className="mt-0.5 shrink-0 text-primary" />
+          <p>{storageError}</p>
+        </div>
+      )}
       {day.date !== localDate() && (
         <div className="alert mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
           <p>Você está continuando o registro de {formatDate(day.date)}.</p>
@@ -132,7 +126,7 @@ export function Diary() {
         </div>
       )}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-bold">
+        <h2 className="text-base font-extrabold tracking-tight">
           Suas refeições{" "}
           <span className="badge badge-sm ml-1 border-none bg-primary/10 text-primary">
             {day.meals.length}

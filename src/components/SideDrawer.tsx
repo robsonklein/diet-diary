@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 
 export function SideDrawer({
@@ -17,30 +17,25 @@ export function SideDrawer({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestClose = () => {
+    if (closing) return;
+    setClosing(true);
+    closeTimer.current = setTimeout(onClose, 240);
+  };
   useEffect(() => {
     const dialog = ref.current!;
     const previous = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
-    const viewport = window.visualViewport;
-    // Segue a área visível quando o teclado virtual abre, inclusive no Safari.
-    function resize() {
-      dialog.style.height = `${viewport?.height ?? window.innerHeight}px`;
-      dialog.style.top = `${viewport?.offsetTop ?? 0}px`;
-    }
-    resize();
     dialog.showModal();
     if (focusSearch)
       dialog
         .querySelector<HTMLInputElement>('input[aria-label="Buscar alimento"]')
         ?.focus({ preventScroll: true });
     document.body.style.overflow = "hidden";
-    viewport?.addEventListener("resize", resize);
-    viewport?.addEventListener("scroll", resize);
-    window.addEventListener("resize", resize);
     return () => {
-      viewport?.removeEventListener("resize", resize);
-      viewport?.removeEventListener("scroll", resize);
-      window.removeEventListener("resize", resize);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
       dialog.close();
       document.body.style.overflow = overflow;
       previous?.focus();
@@ -49,14 +44,14 @@ export function SideDrawer({
   return (
     <dialog
       ref={ref}
-      className="side-drawer drawer drawer-end drawer-open"
+      className={`side-drawer drawer drawer-end drawer-open ${closing ? "is-closing" : ""}`}
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        requestClose();
       }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) requestClose();
       }}
     >
       <section className="side-drawer-panel ml-auto flex h-full w-full flex-col bg-base-100 shadow-xl sm:max-w-lg">
@@ -68,7 +63,7 @@ export function SideDrawer({
             type="button"
             className="btn btn-ghost btn-circle min-h-11 min-w-11"
             aria-label="Fechar"
-            onClick={onClose}
+            onClick={requestClose}
           >
             <ArrowLeft size={22} />
           </button>
