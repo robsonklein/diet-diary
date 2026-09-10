@@ -1,0 +1,655 @@
+{
+  "meal_types": [
+    {
+      "id": "breakfast",
+      "name": "Café da manhã",
+      "icon_name": "Coffee",
+      "sort": 1
+    },
+    {
+      "id": "morning_snack",
+      "name": "Lanche da manhã",
+      "icon_name": "Apple",
+      "sort": 2
+    },
+    {
+      "id": "lunch",
+      "name": "Almoço",
+      "icon_name": "Utensils",
+      "sort": 3
+    },
+    {
+      "id": "afternoon_snack",
+      "name": "Lanche da tarde",
+      "icon_name": "Sandwich",
+      "sort": 4
+    },
+    {
+      "id": "dinner",
+      "name": "Janta",
+      "icon_name": "Soup",
+      "sort": 5
+    },
+    {
+      "id": "supper",
+      "name": "Ceia",
+      "icon_name": "Moon",
+      "sort": 6
+    }
+  ],
+  "foods": [
+    {
+      "id": "banana",
+      "name": "Banana",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Banana",
+      "active": true,
+      "sort": 10,
+      "category": "fruta"
+    },
+    {
+      "id": "papaya",
+      "name": "Mamão",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Apple",
+      "active": true,
+      "sort": 20,
+      "category": "fruta"
+    },
+    {
+      "id": "yogurt_zero_lactose",
+      "name": "Iogurte zero lactose",
+      "unit": "pote",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 30,
+      "category": "laticínio"
+    },
+    {
+      "id": "milk_zero_lactose",
+      "name": "Leite zero lactose",
+      "unit": "ml",
+      "default_quantity": 200,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 40,
+      "category": "laticínio"
+    },
+    {
+      "id": "oats",
+      "name": "Aveia",
+      "unit": "colher de sopa",
+      "default_quantity": 2,
+      "icon_name": "Wheat",
+      "active": true,
+      "sort": 50,
+      "category": "cereal"
+    },
+    {
+      "id": "egg",
+      "name": "Ovo",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Egg",
+      "active": true,
+      "sort": 60,
+      "category": "proteína"
+    },
+    {
+      "id": "boiled_egg",
+      "name": "Ovo cozido",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Egg",
+      "active": true,
+      "sort": 61,
+      "category": "proteína"
+    },
+    {
+      "id": "scrambled_egg",
+      "name": "Ovo mexido",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Egg",
+      "active": true,
+      "sort": 62,
+      "category": "proteína"
+    },
+    {
+      "id": "ricotta",
+      "name": "Ricota",
+      "unit": "g",
+      "default_quantity": 50,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 70,
+      "category": "laticínio"
+    },
+    {
+      "id": "cottage",
+      "name": "Cottage",
+      "unit": "g",
+      "default_quantity": 50,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 80,
+      "category": "laticínio"
+    },
+    {
+      "id": "tapioca",
+      "name": "Farinha de tapioca",
+      "unit": "colher de sopa",
+      "default_quantity": 2,
+      "icon_name": "CircleDot",
+      "active": true,
+      "sort": 90,
+      "category": "carboidrato"
+    },
+    {
+      "id": "bread",
+      "name": "Pão",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Sandwich",
+      "active": true,
+      "sort": 100,
+      "category": "carboidrato"
+    },
+    {
+      "id": "light_cream_cheese",
+      "name": "Requeijão light",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 110,
+      "category": "laticínio"
+    },
+    {
+      "id": "white_cheese",
+      "name": "Queijo branco",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 120,
+      "category": "laticínio"
+    },
+    {
+      "id": "turkey_breast",
+      "name": "Peito de peru",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Drumstick",
+      "active": true,
+      "sort": 130,
+      "category": "proteína"
+    },
+    {
+      "id": "rice",
+      "name": "Arroz",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Wheat",
+      "active": true,
+      "sort": 200,
+      "category": "carboidrato"
+    },
+    {
+      "id": "beans",
+      "name": "Feijão",
+      "unit": "concha",
+      "default_quantity": 1,
+      "icon_name": "Soup",
+      "active": true,
+      "sort": 210,
+      "category": "leguminosa"
+    },
+    {
+      "id": "lentils",
+      "name": "Lentilha",
+      "unit": "concha",
+      "default_quantity": 1,
+      "icon_name": "Soup",
+      "active": true,
+      "sort": 220,
+      "category": "leguminosa"
+    },
+    {
+      "id": "potato",
+      "name": "Batata inglesa",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Circle",
+      "active": true,
+      "sort": 230,
+      "category": "carboidrato"
+    },
+    {
+      "id": "cassava",
+      "name": "Aipim",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Sprout",
+      "active": true,
+      "sort": 240,
+      "category": "carboidrato"
+    },
+    {
+      "id": "pasta",
+      "name": "Macarrão",
+      "unit": "pegador",
+      "default_quantity": 2,
+      "icon_name": "Utensils",
+      "active": true,
+      "sort": 250,
+      "category": "carboidrato"
+    },
+    {
+      "id": "lean_meat",
+      "name": "Carne magra",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Beef",
+      "active": true,
+      "sort": 260,
+      "category": "proteína"
+    },
+    {
+      "id": "cauliflower",
+      "name": "Couve-flor",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Flower2",
+      "active": true,
+      "sort": 300,
+      "category": "legume"
+    },
+    {
+      "id": "broccoli",
+      "name": "Brócolis",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Trees",
+      "active": true,
+      "sort": 310,
+      "category": "legume"
+    },
+    {
+      "id": "spinach",
+      "name": "Espinafre",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Leaf",
+      "active": true,
+      "sort": 320,
+      "category": "verdura"
+    },
+    {
+      "id": "carrot",
+      "name": "Cenoura",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Carrot",
+      "active": true,
+      "sort": 330,
+      "category": "legume"
+    },
+    {
+      "id": "beet",
+      "name": "Beterraba",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Circle",
+      "active": true,
+      "sort": 340,
+      "category": "legume"
+    },
+    {
+      "id": "lettuce",
+      "name": "Alface",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Leaf",
+      "active": true,
+      "sort": 350,
+      "category": "salada"
+    },
+    {
+      "id": "arugula",
+      "name": "Rúcula",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Leaf",
+      "active": true,
+      "sort": 360,
+      "category": "salada"
+    },
+    {
+      "id": "cabbage",
+      "name": "Repolho",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Leaf",
+      "active": true,
+      "sort": 370,
+      "category": "salada"
+    },
+    {
+      "id": "tomato",
+      "name": "Tomate",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Circle",
+      "active": true,
+      "sort": 380,
+      "category": "salada"
+    },
+    {
+      "id": "natural_sandwich",
+      "name": "Sanduíche natural",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Sandwich",
+      "active": true,
+      "sort": 400,
+      "category": "pronto"
+    },
+    {
+      "id": "liveup_meal",
+      "name": "Marmita Live Up",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Package",
+      "active": true,
+      "sort": 410,
+      "category": "pronto"
+    },
+    {
+      "id": "honey",
+      "name": "Mel",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Droplets",
+      "active": true,
+      "sort": 420,
+      "category": "acompanhamento"
+    },
+    {
+      "id": "mumu",
+      "name": "Mumu",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 430,
+      "category": "acompanhamento"
+    },
+    {
+      "id": "coffee",
+      "name": "Café",
+      "unit": "ml",
+      "default_quantity": 100,
+      "icon_name": "Coffee",
+      "active": true,
+      "sort": 900,
+      "category": "bebida",
+      "caution": true,
+      "notes": "O plano orienta consumo com muita moderação por possível piora de azia/refluxo."
+    }
+  ],
+  "meal_templates": [
+    {
+      "id": "breakfast_1",
+      "meal_type_id": "breakfast",
+      "name": "Iogurte, aveia, ovos e banana",
+      "items": [
+        {
+          "food_id": "yogurt_zero_lactose",
+          "quantity": 1
+        },
+        {
+          "food_id": "oats",
+          "quantity": 2
+        },
+        {
+          "food_id": "egg",
+          "quantity": 2
+        },
+        {
+          "food_id": "banana",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "breakfast_2",
+      "meal_type_id": "breakfast",
+      "name": "Pão com requeijão, queijo, peito de peru, ovo e fruta",
+      "items": [
+        {
+          "food_id": "bread",
+          "quantity": 2
+        },
+        {
+          "food_id": "light_cream_cheese",
+          "quantity": 1
+        },
+        {
+          "food_id": "white_cheese",
+          "quantity": 1
+        },
+        {
+          "food_id": "turkey_breast",
+          "quantity": 1
+        },
+        {
+          "food_id": "egg",
+          "quantity": 1
+        }
+      ],
+      "notes": "Adicionar uma fruta não cítrica."
+    },
+    {
+      "id": "breakfast_3",
+      "meal_type_id": "breakfast",
+      "name": "Crepioca com queijo, peito de peru e fruta",
+      "items": [
+        {
+          "food_id": "tapioca",
+          "quantity": 2
+        },
+        {
+          "food_id": "egg",
+          "quantity": 2
+        },
+        {
+          "food_id": "white_cheese",
+          "quantity": 1
+        },
+        {
+          "food_id": "turkey_breast",
+          "quantity": 1
+        }
+      ],
+      "notes": "Adicionar uma fruta não cítrica."
+    },
+    {
+      "id": "breakfast_4",
+      "meal_type_id": "breakfast",
+      "name": "Bowl de mamão com banana, aveia e ovos",
+      "items": [
+        {
+          "food_id": "papaya",
+          "quantity": 1
+        },
+        {
+          "food_id": "banana",
+          "quantity": 1
+        },
+        {
+          "food_id": "oats",
+          "quantity": 1
+        },
+        {
+          "food_id": "egg",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "id": "lunch_1",
+      "meal_type_id": "lunch",
+      "name": "Arroz, feijão, carne magra e salada",
+      "items": [
+        {
+          "food_id": "rice",
+          "quantity": 2
+        },
+        {
+          "food_id": "beans",
+          "quantity": 1
+        },
+        {
+          "food_id": "lean_meat",
+          "quantity": 1
+        }
+      ],
+      "notes": "Complementar com legumes cozidos e salada à vontade, exceto cebola e pimentão."
+    },
+    {
+      "id": "lunch_2",
+      "meal_type_id": "lunch",
+      "name": "Macarrão com acompanhamento e salada",
+      "items": [
+        {
+          "food_id": "pasta",
+          "quantity": 2
+        }
+      ],
+      "notes": "Plano cita molho bolonhesa, legumes assados na airfryer e salada."
+    },
+    {
+      "id": "lunch_3",
+      "meal_type_id": "lunch",
+      "name": "Arroz, feijão e omelete",
+      "items": [
+        {
+          "food_id": "rice",
+          "quantity": 2
+        },
+        {
+          "food_id": "beans",
+          "quantity": 1
+        },
+        {
+          "food_id": "egg",
+          "quantity": 3
+        },
+        {
+          "food_id": "ricotta",
+          "quantity": 1
+        },
+        {
+          "food_id": "carrot",
+          "quantity": 1
+        },
+        {
+          "food_id": "broccoli",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "snack_shake",
+      "meal_type_id": "afternoon_snack",
+      "name": "Batida de banana com aveia",
+      "items": [
+        {
+          "food_id": "banana",
+          "quantity": 1
+        },
+        {
+          "food_id": "milk_zero_lactose",
+          "quantity": 200
+        },
+        {
+          "food_id": "oats",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "snack_crepioca",
+      "meal_type_id": "afternoon_snack",
+      "name": "Crepioca com peito de peru e queijo",
+      "items": [
+        {
+          "food_id": "tapioca",
+          "quantity": 2
+        },
+        {
+          "food_id": "egg",
+          "quantity": 2
+        },
+        {
+          "food_id": "turkey_breast",
+          "quantity": 1
+        },
+        {
+          "food_id": "white_cheese",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "dinner_omelet",
+      "meal_type_id": "dinner",
+      "name": "Omelete com queijo e peito de peru",
+      "items": [
+        {
+          "food_id": "egg",
+          "quantity": 2
+        },
+        {
+          "food_id": "white_cheese",
+          "quantity": 1
+        },
+        {
+          "food_id": "turkey_breast",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "supper_1",
+      "meal_type_id": "supper",
+      "name": "Ceia leve",
+      "items": [],
+      "notes": "Escolher fruta; fruta com mel; iogurte; iogurte com menos aveia; ou uma fatia de pão com recheio."
+    }
+  ],
+  "guidelines": {
+    "water_ml_day": 3000,
+    "max_liquid_during_meal_ml": 150,
+    "protein_target_g_day": 104.4,
+    "gastric_cautions": [
+      "Álcool",
+      "Chocolate",
+      "Hortelã ou menta",
+      "Café",
+      "Gorduras em geral e frituras",
+      "Carnes com alto teor de gordura",
+      "Ultraprocessados",
+      "Pimentas",
+      "Embutidos",
+      "Frutas cítricas",
+      "Cebola crua",
+      "Pimentão",
+      "Alimentos muito quentes"
+    ]
+  }
+}
