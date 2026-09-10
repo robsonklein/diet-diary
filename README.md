@@ -1,6 +1,6 @@
 # nutri. — Diário alimentar
 
-MVP mobile-first com Next.js App Router, TypeScript, Tailwind CSS, DaisyUI e Lucide. O diário fica exclusivamente em memória: atualizar ou fechar a página apaga as refeições. Não há login, histórico, localStorage, IndexedDB nem gravações no Directus.
+MVP mobile-first com Next.js App Router, TypeScript, Tailwind CSS, DaisyUI e Lucide. O diário é salvo automaticamente no localStorage e restaurado ao atualizar ou reabrir a aplicação. Não há login, histórico de vários dias nem gravações no Directus.
 
 ## Executar
 
@@ -19,9 +19,9 @@ Abra http://localhost:3000. Para produção: `npm run build` e `npm start`.
 
 O JSON fornecido está em `src/data/directus-mock-plano-alimentar.json`. A aplicação usa seus 36 alimentos e 6 tipos de refeição com `CATALOG_SOURCE=mock` (também é o padrão quando a variável está ausente). Funciona sem conexão ao Directus: refeições, quantidades, itens customizados e exportações ficam disponíveis normalmente.
 
-O adaptador `src/lib/mock-catalog.ts` filtra alimentos ativos, ordena por `sort`/nome/ID e entrega o mesmo formato usado pela integração. As unidades e quantidades padrão são preservadas. O arquivo nunca é alterado ao montar o diário, que continua apenas em memória.
+O adaptador `src/lib/mock-catalog.ts` filtra alimentos ativos, ordena por `sort`/nome/ID e entrega o mesmo formato usado pela integração. As unidades e quantidades padrão são preservadas. O arquivo nunca é alterado ao montar o diário, que é salvo separadamente no navegador.
 
-Os campos extras `category`, `caution`, `notes`, `meal_templates` e `guidelines` estão preservados no JSON, mas não são consumidos nem enviados pela API do MVP. O diário começa vazio; modelos de refeições não são registros de consumo. Para editar o catálogo temporário, altere o JSON e reinicie a aplicação (em produção, gere um novo build).
+Os campos extras `category`, `caution`, `notes`, `meal_templates` e `guidelines` estão preservados no JSON, mas não são consumidos nem enviados pela API do MVP. No primeiro acesso, o diário começa vazio; modelos de refeições não são registros de consumo. Para editar o catálogo temporário, altere o JSON e reinicie a aplicação (em produção, gere um novo build).
 
 ## Associar o Directus depois
 
@@ -83,7 +83,7 @@ Na política pública ou na política associada ao token, permita **somente Read
 - `src/lib/directus/`: cliente exclusivo do servidor, paginação, filtros, validação e funções `getFoods()` / `getMealTypes()`.
 - `src/app/api/catalog/route.ts`: entrega o catálogo, mantendo o token no servidor.
 - `src/lib/catalog.ts`: acesso ao catálogo para a aplicação.
-- `src/lib/diary.ts` e `src/hooks/use-diary.ts`: reducer puro e estado em memória, independentes do Directus.
+- `src/lib/diary.ts` e `src/hooks/use-diary.ts`: reducer puro e estado com salvamento automático, independentes do Directus. `src/lib/diary-storage.ts` valida e recupera os dados locais.
 - `src/components/`: tela e componentes reutilizáveis, sheets, busca, cards e stepper.
 - `src/utils/icons.ts`: mapa explícito de ícones; nomes ausentes/desconhecidos usam `Utensils`. Amplie o mapa para outros ícones do catálogo.
 - `src/utils/export.ts`: CSV com UTF-8 BOM, escaping e proteção contra fórmulas; PNG via `html-to-image`.
@@ -91,13 +91,25 @@ Na política pública ou na política associada ao token, permita **somente Read
 
 Os passos ficam em `QUANTITY_STEPS`: unidade = 1, g = 10, ml = 50; outras unidades = 1. Diminuir nunca produz zero ou número negativo; use remover para excluir um item. A quantidade inicial preserva o valor do catálogo, inclusive decimal. Itens customizados começam em 1. Refeições sem alimentos são preservadas nas exportações.
 
-A data é capturada no fuso local do navegador ao abrir a aplicação e representa aquele diário durante a sessão. O PNG usa layout branco com data, refeições, horários e alimentos, sem botões. O download pode ser aberto ou salvo pelo navegador do celular. Exporte antes de atualizar a página.
+A data é capturada no fuso local ao iniciar um diário e preservada ao reabrir. Se o registro for de outro dia, a aplicação permite iniciar o diário de hoje com confirmação, oferecendo a exportação antes de substituir o anterior. O PNG usa layout branco com data, refeições, horários e alimentos, sem botões. O download pode ser aberto ou salvo pelo navegador do celular. Exporte uma cópia para guardar ou compartilhar.
+
+## Salvamento local
+
+Cada alteração de refeições, horários, alimentos, quantidades e ordem é gravada imediatamente na chave `nutri.diary.v1`. A restauração não depende do catálogo estar disponível. Dados inválidos ou armazenamento bloqueado exibem um aviso; o diário continua utilizável em memória e pode ser exportado.
+
+É mantido um único diário por navegador e endereço do site. Não há sincronização entre dispositivos, navegadores ou domínios (localhost, endereço Netlify e domínio próprio têm registros separados). Limpar os dados do site ou encerrar uma sessão privada pode apagar o registro. Em várias abas, prevalece a última alteração salva; as outras abas recuperam esse estado ao recarregar. Use a exportação como cópia de segurança.
 
 ## Verificações
 
 Toque no cabeçalho da refeição para recolher ou expandir seu card. O menu de três pontos contém **Editar** e **Excluir**, também disponíveis com o card recolhido. A edição permite alterar tipo e horário mantendo os alimentos e quantidades. Fechar sem salvar cancela a edição; excluir exige confirmação.
 
-Arraste o alimento pela alça de pontos à esquerda para ordenar dentro da mesma refeição, com mouse ou toque. Pelo teclado, foque a alça, pressione espaço, use as setas e pressione espaço novamente para soltar (Escape cancela). O arrasto não é iniciado pelos botões de quantidade. A ordem fica no estado em memória e é respeitada no CSV e PNG, mesmo com o card recolhido.
+Cada tipo de refeição pode ser adicionado uma vez por dia. Os tipos já usados ficam desabilitados e identificados por “Já adicionada”. Na edição, o tipo atual permanece disponível; excluir uma refeição libera seu tipo novamente.
+
+Os controles de adicionar refeição e exportar ficam no fluxo da página, ao final da lista, sem rodapé fixo. Depois de adicionar uma refeição ou alimentos (inclusive itens customizados e aumentos pela busca), a página rola até o fim ao fechar o drawer. A busca permanece no topo enquanto o drawer está aberto. A rolagem respeita a preferência de movimento reduzido.
+
+Nova refeição e Adicionar alimentos abrem drawers pela direita. Nova refeição mantém o formulário no topo com rolagem própria. O drawer de alimentos abre, com busca no topo, resultados roláveis e altura ajustada à área visível do navegador quando o teclado abre. O botão destacado **Adicionar item** cria o item customizado a partir da busca. Feche pela seta de voltar, por Escape ou por Concluir. As demais ações continuam usando os sheets existentes.
+
+Arraste o alimento pela alça de pontos à esquerda para ordenar dentro da mesma refeição, com mouse ou toque. Pelo teclado, foque a alça, pressione espaço, use as setas e pressione espaço novamente para soltar (Escape cancela). O arrasto não é iniciado pelos botões de quantidade. A ordem é salva no navegador e é respeitada no CSV e PNG, mesmo com o card recolhido.
 
 Na busca, selecionar novamente um alimento já presente aumenta sua quantidade pelo mesmo passo do controle `+`, sem criar outra linha. A lista mostra a quantidade atual na refeição. Itens customizados com o mesmo nome (ignorando espaços nas extremidades e maiúsculas/minúsculas) e a mesma unidade também são agrupados; unidades diferentes continuam em itens separados.
 
@@ -110,7 +122,7 @@ npm run test:e2e
 npm run build
 ```
 
-Os testes E2E usam as portas 3100 (Next.js) e 8056 (fixture Directus); deixe-as disponíveis e encerre outro `next dev` neste diretório antes de rodar. A fixture valida autenticação, filtros e paginação, sem uma instância real. O fluxo mobile cobre criação, busca sem acentos, quantidades, item customizado, remoções, downloads CSV/PNG e reset ao atualizar. Quando houver uma instância, configure o Directus real e percorra o mesmo fluxo.
+Os testes E2E usam as portas 3100 (Next.js) e 8056 (fixture Directus); deixe-as disponíveis e encerre outro `next dev` neste diretório antes de rodar. A fixture valida autenticação, filtros e paginação, sem uma instância real. O fluxo mobile cobre criação, busca sem acentos, quantidades, item customizado, remoções, downloads CSV/PNG e restauração ao atualizar. Também verifica reabertura de aba, data anterior e falhas no armazenamento. Quando houver uma instância, configure o Directus real e percorra o mesmo fluxo.
 
 Para executar os testes de interface contra um servidor já aberto, defina `$env:PLAYWRIGHT_BASE_URL='http://localhost:3000'` e rode `npm run test:e2e`. Nesse modo, os testes simulam o catálogo no navegador e o teste REST é pulado; o servidor existente não é interrompido. Sem essa variável, a suíte continua iniciando seus próprios servidores e executa também a integração REST.
 

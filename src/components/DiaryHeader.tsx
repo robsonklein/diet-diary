@@ -1,5 +1,6 @@
 import { CalendarDays, Leaf } from "lucide-react";
 import { formatDate } from "@/utils/export";
+import { localDate } from "@/lib/diary";
 
 export function DiaryHeader({ date }: { date: string }) {
   return (
@@ -15,22 +16,19 @@ export function DiaryHeader({ date }: { date: string }) {
           Seu diário alimentar
         </span>
       </nav>
-      <header className="pb-7 pt-9">
-        <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-          <span className="size-1.5 rounded-full bg-primary" />
-          Um dia de cada vez
-        </div>
+      <header className="py-6">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-          O que nutre seu dia?
+          Diário alimentar
         </h1>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-base-content/60">
-          Registre suas refeições, do seu jeito.
-          <br />
-          Cada pequena escolha faz parte da sua história.
+          Registre suas refeições diárias e acompanhe seu progresso nutricional
+          de forma prática e eficiente.
         </p>
         <div className="mt-6 flex items-center gap-2 text-sm">
           <CalendarDays size={17} className="text-primary" />
-          <span className="font-semibold">Hoje</span>
+          <span className="font-semibold">
+            {date === localDate() ? "Hoje" : "Registro salvo"}
+          </span>
           <span className="text-base-content/35">/</span>
           <time dateTime={date} className="text-base-content/65">
             {formatDate(date)}

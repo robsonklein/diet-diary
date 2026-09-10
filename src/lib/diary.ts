@@ -21,6 +21,7 @@ export function localDate(now = new Date()) {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 export type DiaryAction =
+  | { type: "new-day"; date: string }
   | { type: "add-meal"; meal: Meal }
   | {
       type: "edit-meal";
@@ -46,6 +47,21 @@ export function sameMealItem(a: Omit<MealItem, "id">, b: Omit<MealItem, "id">) {
 }
 
 export function diaryReducer(day: DiaryDay, action: DiaryAction): DiaryDay {
+  if (action.type === "new-day") return { date: action.date, meals: [] };
+  if (
+    action.type === "add-meal" &&
+    day.meals.some((meal) => meal.mealTypeId === action.meal.mealTypeId)
+  )
+    return day;
+  if (
+    action.type === "edit-meal" &&
+    day.meals.some(
+      (meal) =>
+        meal.id !== action.mealId &&
+        meal.mealTypeId === action.changes.mealTypeId,
+    )
+  )
+    return day;
   if (action.type === "add-meal")
     return { ...day, meals: [...day.meals, action.meal] };
   if (action.type === "remove-meal")

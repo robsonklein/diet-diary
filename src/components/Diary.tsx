@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowDownToLine, Check, Info, Plus, RefreshCw } from "lucide-react";
 import { useDiary } from "@/hooks/use-diary";
 import { getCatalog } from "@/lib/catalog";
@@ -9,23 +9,42 @@ import { EmptyState } from "./EmptyState";
 import { MealCard } from "./MealCard";
 import { MealForm } from "./MealForm";
 import { MobileSheet } from "./MobileSheet";
+import { SideDrawer } from "./SideDrawer";
 import { FoodTypeahead } from "./FoodTypeahead";
 import { ExportActions } from "./ExportActions";
+import { localDate } from "@/lib/diary";
+import { formatDate } from "@/utils/export";
 
 type Sheet =
   | { type: "meal" }
   | { type: "edit"; mealId: string }
   | { type: "food"; mealId: string }
   | { type: "export" }
+  | { type: "new-day" }
   | { type: "remove"; mealId: string }
   | null;
 export function Diary() {
-  const { day, dispatch } = useDiary();
+  const { day, dispatch, storageError } = useDiary();
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState(0);
   const [sheet, setSheet] = useState<Sheet>(null);
+  const scrollAfterAdding = useRef(false);
+  useEffect(() => {
+    // Aguarda o drawer/sheet liberar a rolagem e devolver o foco à página.
+    if (sheet || !scrollAfterAdding.current) return;
+    const frame = requestAnimationFrame(() => {
+      scrollAfterAdding.current = false;
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [day, sheet]);
   const selectedMeal =
     sheet && "mealId" in sheet
       ? day.meals.find((meal) => meal.id === sheet.mealId)
@@ -50,16 +69,34 @@ export function Diary() {
   const canAdd = !!catalog?.mealTypes.length;
   const itemCount = day.meals.reduce((sum, meal) => sum + meal.items.length, 0);
   return (
-    <main className="mx-auto min-h-dvh max-w-2xl px-5 pb-32 sm:px-8">
+    <main className="mx-auto min-h-dvh max-w-2xl px-5 pb-6 sm:px-8">
       <DiaryHeader date={day.date} />
-      <div className="mb-7 flex items-start gap-2.5 rounded-xl bg-primary/6 p-3.5 text-xs leading-relaxed text-base-content/65">
+      <div
+        role={storageError ? "alert" : undefined}
+        className={`mb-7 flex items-start gap-2.5 rounded-xl p-3.5 text-xs leading-relaxed ${storageError ? "bg-warning/15 text-base-content" : "bg-primary/6 text-base-content/65"}`}
+      >
         <Info size={17} className="mt-0.5 shrink-0 text-primary" />
         <p>
-          Este diário é temporário.{" "}
-          <strong className="font-semibold">Exporte antes de sair:</strong> ao
-          atualizar ou fechar a página, os registros serão apagados.
+          {storageError || (
+            <>
+              Seu diário é salvo automaticamente neste navegador. Você pode
+              fechar e voltar depois. Exporte uma cópia para guardar ou
+              compartilhar.
+            </>
+          )}
         </p>
       </div>
+      {day.date !== localDate() && (
+        <div className="alert mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <p>Você está continuando o registro de {formatDate(day.date)}.</p>
+          <button
+            className="btn btn-primary min-h-11"
+            onClick={() => setSheet({ type: "new-day" })}
+          >
+            Iniciar diário de hoje
+          </button>
+        </div>
+      )}
       {loading && (
         <div
           className="mb-6 flex items-center gap-3 rounded-xl bg-base-100 p-4 text-sm"
@@ -101,14 +138,6 @@ export function Diary() {
             {day.meals.length}
           </span>
         </h2>
-        <button
-          className="btn btn-ghost min-h-11 px-2 text-xs text-base-content/60"
-          disabled={!day.meals.length}
-          onClick={() => setSheet({ type: "export" })}
-        >
-          <ArrowDownToLine size={16} />
-          Exportar dia
-        </button>
       </div>
       {day.meals.length ? (
         <div className="space-y-4">
@@ -154,10 +183,11 @@ export function Diary() {
         />
       )}
       <footer
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-base-300/70 bg-base-100/95 px-5 pt-3 backdrop-blur"
+        aria-label="Ações do diário"
+        className="mt-6 border-t border-base-300/70 pt-4"
         style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
       >
-        <div className="mx-auto flex max-w-xl gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             className="btn btn-primary min-h-13 flex-1 rounded-xl"
             disabled={!canAdd}
@@ -168,53 +198,77 @@ export function Diary() {
           </button>
           <button
             className="btn min-h-13 rounded-xl bg-base-100 px-4"
-            aria-label="Exportar diário"
+            aria-label="Exportar dia"
             disabled={!day.meals.length}
             onClick={() => setSheet({ type: "export" })}
           >
             <ArrowDownToLine size={20} />
+            <span className="hidden sm:inline">Exportar dia</span>
           </button>
         </div>
       </footer>
-      {sheet && (
-        <MobileSheet
-          key={sheet.type}
-          title={
-            sheet.type === "meal"
-              ? "Nova refeição"
-              : sheet.type === "edit"
-                ? "Editar refeição"
-                : sheet.type === "food"
-                  ? "Adicionar alimentos"
-                  : sheet.type === "remove"
-                    ? "Remover refeição?"
-                    : "Seu dia para levar"
-          }
+      {sheet?.type === "food" && catalog && (
+        <SideDrawer
+          key="food"
+          title="Adicionar alimentos"
+          subtitle={selectedMeal?.mealTypeName}
+          focusSearch
           onClose={() => setSheet(null)}
         >
-          {sheet.type === "meal" && catalog && (
+          <FoodTypeahead
+            foods={catalog.foods}
+            items={selectedMeal?.items ?? []}
+            onAdd={(item) => {
+              scrollAfterAdding.current = true;
+              dispatch({ type: "add-item", mealId: sheet.mealId, item });
+            }}
+            onDone={() => setSheet(null)}
+          />
+        </SideDrawer>
+      )}
+      {sheet?.type === "meal" && catalog && (
+        <SideDrawer
+          key="meal"
+          title="Nova refeição"
+          onClose={() => setSheet(null)}
+        >
+          <div
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5"
+            style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom))" }}
+          >
             <MealForm
               types={catalog.mealTypes}
+              disabledTypeIds={day.meals.map((meal) => meal.mealTypeId)}
               onSubmit={(meal) => {
+                scrollAfterAdding.current = true;
                 dispatch({ type: "add-meal", meal });
                 setSheet({ type: "food", mealId: meal.id });
               }}
             />
-          )}
-          {sheet.type === "food" && catalog && (
-            <FoodTypeahead
-              foods={catalog.foods}
-              items={selectedMeal?.items ?? []}
-              onAdd={(item) =>
-                dispatch({ type: "add-item", mealId: sheet.mealId, item })
-              }
-              onDone={() => setSheet(null)}
-            />
-          )}
+          </div>
+        </SideDrawer>
+      )}
+      {sheet && sheet.type !== "food" && sheet.type !== "meal" && (
+        <MobileSheet
+          key={sheet.type}
+          title={
+            sheet.type === "edit"
+              ? "Editar refeição"
+              : sheet.type === "remove"
+                ? "Remover refeição?"
+                : sheet.type === "new-day"
+                  ? "Iniciar diário de hoje?"
+                  : "Seu dia para levar"
+          }
+          onClose={() => setSheet(null)}
+        >
           {sheet.type === "edit" && catalog && selectedMeal && (
             <MealForm
               types={catalog.mealTypes}
               initialMeal={selectedMeal}
+              disabledTypeIds={day.meals
+                .filter((meal) => meal.id !== selectedMeal.id)
+                .map((meal) => meal.mealTypeId)}
               onSubmit={({ mealTypeId, mealTypeName, iconName, time }) => {
                 dispatch({
                   type: "edit-meal",
@@ -226,6 +280,38 @@ export function Diary() {
             />
           )}
           {sheet.type === "export" && <ExportActions day={day} />}
+          {sheet.type === "new-day" && (
+            <div className="space-y-5">
+              <p className="text-sm text-base-content/65">
+                O registro de {formatDate(day.date)} será substituído por um
+                diário vazio de hoje. Exporte o registro atual antes de
+                continuar, se quiser guardá-lo.
+              </p>
+              <button
+                className="btn btn-outline min-h-12 w-full"
+                onClick={() => setSheet({ type: "export" })}
+              >
+                Exportar registro atual
+              </button>
+              <div className="flex gap-3">
+                <button
+                  className="btn min-h-12 flex-1"
+                  onClick={() => setSheet(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-primary min-h-12 flex-1"
+                  onClick={() => {
+                    dispatch({ type: "new-day", date: localDate() });
+                    setSheet(null);
+                  }}
+                >
+                  Iniciar novo diário
+                </button>
+              </div>
+            </div>
+          )}
           {sheet.type === "remove" && (
             <div>
               <p className="mb-6 text-sm text-base-content/65">

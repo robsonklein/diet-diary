@@ -8,13 +8,19 @@ import { MealTypeSelector } from "./MealTypeSelector";
 export function MealForm({
   types,
   initialMeal,
+  disabledTypeIds = [],
   onSubmit,
 }: {
   types: MealType[];
   initialMeal?: Meal;
+  disabledTypeIds?: string[];
   onSubmit: (meal: Meal) => void;
 }) {
-  const [typeId, setTypeId] = useState(initialMeal?.mealTypeId ?? types[0]?.id ?? "");
+  const [typeId, setTypeId] = useState(
+    initialMeal?.mealTypeId ??
+      types.find((type) => !disabledTypeIds.includes(type.id))?.id ??
+      "",
+  );
   const [time, setTime] = useState(initialMeal?.time ?? "");
   return (
     <form
@@ -22,7 +28,7 @@ export function MealForm({
       onSubmit={(event) => {
         event.preventDefault();
         const type = types.find((type) => type.id === typeId);
-        if (type)
+        if (type && !disabledTypeIds.includes(type.id))
           onSubmit({
             id: initialMeal?.id ?? crypto.randomUUID(),
             mealTypeId: type.id,
@@ -33,7 +39,18 @@ export function MealForm({
           });
       }}
     >
-      <MealTypeSelector types={types} value={typeId} onChange={setTypeId} />
+      <MealTypeSelector
+        types={types}
+        value={typeId}
+        onChange={setTypeId}
+        disabledIds={disabledTypeIds}
+      />
+      {!typeId && (
+        <p role="status" className="text-sm text-base-content/60">
+          Todas as refeições já foram adicionadas. Você pode editá-las pelo menu
+          do card.
+        </p>
+      )}
       <label className="block">
         <span className="mb-2 block text-sm font-semibold">
           Horário{" "}
@@ -48,7 +65,7 @@ export function MealForm({
       </label>
       <button
         className="btn btn-primary min-h-13 w-full rounded-xl"
-        disabled={!typeId}
+        disabled={!typeId || disabledTypeIds.includes(typeId)}
       >
         {initialMeal ? "Salvar alterações" : "Adicionar alimentos"}
         <ArrowRight size={18} />

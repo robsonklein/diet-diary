@@ -3,6 +3,46 @@ import assert from "node:assert/strict";
 import { changeQuantity, diaryReducer, localDate } from "../src/lib/diary";
 import { diaryToCsv, formatQuantity } from "../src/utils/export";
 import type { DiaryDay, Meal } from "../src/types/diary";
+import { parseSavedDiary } from "../src/lib/diary-storage";
+
+test("restauração valida versão, data real, quantidade e identidades", () => {
+  const day: DiaryDay = {
+    date: "2024-02-29",
+    meals: [
+      {
+        id: "meal",
+        mealTypeId: "breakfast",
+        mealTypeName: "Café",
+        items: [{ id: "item", name: "Lanche", quantity: 1.5, isCustom: true }],
+      },
+    ],
+  };
+  const encode = (value: unknown) => JSON.stringify({ version: 1, day: value });
+  assert.deepEqual(parseSavedDiary(encode(day)), day);
+  assert.throws(() => parseSavedDiary(JSON.stringify({ version: 2, day })));
+  assert.throws(() => parseSavedDiary(encode({ ...day, date: "2023-02-29" })));
+  assert.throws(() =>
+    parseSavedDiary(encode({ ...day, meals: [day.meals[0], day.meals[0]] })),
+  );
+  for (const quantity of [0, -1, null, "2"]) {
+    assert.throws(() =>
+      parseSavedDiary(
+        encode({
+          ...day,
+          meals: [
+            {
+              ...day.meals[0],
+              items: [{ ...day.meals[0].items[0], quantity }],
+            },
+          ],
+        }),
+      ),
+    );
+  }
+  const reset = diaryReducer(day, { type: "new-day", date: "2024-03-01" });
+  assert.deepEqual(reset, { date: "2024-03-01", meals: [] });
+  assert.equal(day.meals.length, 1);
+});
 
 test("passos por unidade e limites positivos", () => {
   assert.equal(changeQuantity(1, "unidade", 1), 2);
@@ -214,4 +254,38 @@ test("ordenar preserva identidade e quantidade e limita alterações à refeiç�
     overId: "a",
   });
   assert.equal(invalid.meals[0], day.meals[0]);
+});
+
+test("não duplica tipo de refeição ao adicionar ou editar; remover libera o tipo", () => {
+  const meal: Meal = {
+    id: "first",
+    mealTypeId: "breakfast",
+    mealTypeName: "Café da manhã",
+    items: [],
+  };
+  const initial: DiaryDay = { date: "2026-09-10", meals: [meal] };
+  assert.equal(
+    diaryReducer(initial, {
+      type: "add-meal",
+      meal: { ...meal, id: "duplicate" },
+    }),
+    initial,
+  );
+  const day = diaryReducer(initial, {
+    type: "add-meal",
+    meal: { ...meal, id: "lunch", mealTypeId: "lunch", mealTypeName: "Almoço" },
+  });
+  assert.equal(
+    diaryReducer(day, {
+      type: "edit-meal",
+      mealId: "lunch",
+      changes: { mealTypeId: "breakfast", mealTypeName: "Café da manhã" },
+    }),
+    day,
+  );
+  const removed = diaryReducer(day, { type: "remove-meal", mealId: "first" });
+  assert.equal(
+    diaryReducer(removed, { type: "add-meal", meal }).meals.length,
+    2,
+  );
 });

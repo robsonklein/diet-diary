@@ -30,3 +30,42 @@ select {
 button {
   touch-action: manipulation;
 }
+
+.side-drawer {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.side-drawer[open] {
+  display: block;
+}
+.side-drawer:not([open]) {
+  display: none;
+}
+.side-drawer::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+.side-drawer-panel {
+  animation: side-drawer-enter 180ms ease-out;
+}
+@keyframes side-drawer-enter {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .side-drawer-panel {
+    animation: none;
+  }
+}

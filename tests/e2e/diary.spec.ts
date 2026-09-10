@@ -43,7 +43,7 @@ test("integração REST: token no servidor, filtro, paginação e normalização
   expect(JSON.stringify(body)).not.toContain("test-read-token");
 });
 
-test("fluxo mobile completo, exportações e reset no refresh", async ({
+test("fluxo mobile completo, exportações e persistência no refresh", async ({
   page,
 }, testInfo) => {
   await page.route("**/api/catalog", (route) =>
@@ -64,7 +64,7 @@ test("fluxo mobile completo, exportações e reset no refresh", async ({
     .getByRole("textbox", { name: "Buscar alimento" })
     .fill("Pão integral com queijo");
   await page
-    .getByRole("button", { name: "Adicionar “Pão integral com queijo”" })
+    .getByRole("button", { name: "Adicionar item “Pão integral com queijo”" })
     .click();
   await page.getByRole("button", { name: "Concluir" }).click();
   await page.getByRole("button", { name: "Aumentar Ovo cozido" }).click();
@@ -119,6 +119,10 @@ test("fluxo mobile completo, exportações e reset no refresh", async ({
   expect(pngBytes.subarray(1, 4).toString()).toBe("PNG");
   expect(pngBytes.length).toBeGreaterThan(10000);
   await page.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.reload();
+  await expect(
+    page.getByText("Pão integral com queijo", { exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("button", {
       name: "Remover Pão integral com queijo",
@@ -129,25 +133,28 @@ test("fluxo mobile completo, exportações e reset no refresh", async ({
     page.getByText("Pão integral com queijo", { exact: true }),
   ).toHaveCount(0);
   await page.reload();
-  await expect(page.getByText("Seu dia começa aqui")).toBeVisible();
+  await expect(page.locator("article")).toContainText("08:30");
+  await expect(
+    page
+      .getByRole("group", { name: "Quantidade de Ovo cozido" })
+      .locator("output"),
+  ).toHaveText("2");
+  await expect(
+    page.getByText("Pão integral com queijo", { exact: true }),
+  ).toHaveCount(0);
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.screenshot({
     path: testInfo.outputPath("diary-desktop.png"),
     fullPage: true,
   });
   await page.setViewportSize({ width: 393, height: 851 });
-  await page
-    .getByRole("button", { name: "Registrar primeira refeição" })
-    .click();
-  await page
-    .getByRole("button", { name: "Adicionar alimentos", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Concluir" }).click();
   await page.getByLabel("Opções de Café da manhã", { exact: true }).click();
   await page.getByRole("button", { name: "Excluir", exact: true }).click();
   await page
     .getByRole("button", { name: "Remover refeição", exact: true })
     .click();
+  await expect(page.getByText("Seu dia começa aqui")).toBeVisible();
+  await page.reload();
   await expect(page.getByText("Seu dia começa aqui")).toBeVisible();
 });
 

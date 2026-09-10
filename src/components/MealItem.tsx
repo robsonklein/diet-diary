@@ -34,7 +34,7 @@ export function MealItem({
         position: "relative",
         zIndex: isDragging ? 20 : undefined,
       }}
-      className={`grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center gap-x-1 gap-y-2 border-t border-base-200 bg-base-100 py-4 first:border-0 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto_2.75rem] ${isDragging ? "rounded-xl shadow-lg ring-2 ring-primary/30" : ""}`}
+      className={`grid grid-cols-[1.5rem_minmax(0,1fr)_2.75rem] items-center gap-x-1 gap-y-2 border-t border-base-200 bg-base-100 py-4 first:border-0 sm:grid-cols-[1.5rem_minmax(0,1fr)_auto_2.75rem] ${isDragging ? "rounded-xl shadow-lg ring-2 ring-primary/30" : ""}`}
     >
       <button
         ref={setActivatorNodeRef}
@@ -42,12 +42,12 @@ export function MealItem({
         {...listeners}
         type="button"
         style={{ touchAction: "none" }}
-        className="btn btn-ghost btn-circle col-start-1 row-start-1 min-h-11 min-w-11 touch-none cursor-grab text-base-content/45 active:cursor-grabbing"
+        className="col-start-1 row-start-1 flex h-11 w-6 cursor-grab items-center justify-center rounded-md text-base-content/30 hover:bg-base-200 hover:text-base-content/60 focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing disabled:opacity-30"
         aria-label={`Arrastar ${item.name} para ordenar`}
         aria-roledescription="alimento ordenável"
         disabled={dragDisabled}
       >
-        <GripVertical size={20} />
+        <GripVertical size={14} />
       </button>
       <div className="col-start-2 row-start-1 flex min-w-0 items-center gap-3">
         <div className="hidden size-10 shrink-0 items-center justify-center rounded-xl bg-base-200 sm:flex">
