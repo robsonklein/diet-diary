@@ -126,7 +126,7 @@ export function Diary() {
         </div>
       )}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-base font-extrabold tracking-tight">
+        <h2 className="text-base font-bold tracking-tight">
           Suas refeições{" "}
           <span className="badge badge-sm ml-1 border-none bg-primary/10 text-primary">
             {day.meals.length}
