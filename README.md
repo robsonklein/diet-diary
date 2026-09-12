@@ -107,7 +107,7 @@ Cada tipo de refeição pode ser adicionado uma vez por dia. Os tipos já usados
 
 Os controles de adicionar refeição e exportar ficam no fluxo da página, ao final da lista, sem rodapé fixo. Depois de adicionar uma refeição ou alimentos (inclusive itens customizados e aumentos pela busca), a página rola até o fim ao fechar o drawer. A busca permanece no topo enquanto o drawer está aberto. A rolagem respeita a preferência de movimento reduzido.
 
-Nova refeição e Adicionar alimentos abrem drawers pela direita. Nova refeição mantém o formulário no topo com rolagem própria. O drawer de alimentos abre, com busca no topo, resultados roláveis e altura ajustada à área visível do navegador quando o teclado abre. O botão destacado **Adicionar item** cria o item customizado a partir da busca. Feche pela seta de voltar, por Escape ou por Concluir. As demais ações continuam usando os sheets existentes.
+Nova refeição e Adicionar alimentos abrem drawers pela direita. Nova refeição mantém o formulário no topo com rolagem própria. O drawer de alimentos mantém altura fixa, com busca no topo e resultados roláveis; no mobile, a busca não recebe foco automático para não abrir o teclado virtual sobre o conteúdo. O botão destacado **Adicionar item** cria o item customizado a partir da busca. Feche pela seta de voltar, por Escape ou por Concluir. As demais ações continuam usando os sheets existentes.
 
 Arraste o alimento pela alça de pontos à esquerda para ordenar dentro da mesma refeição, com mouse ou toque. Pelo teclado, foque a alça, pressione espaço, use as setas e pressione espaço novamente para soltar (Escape cancela). O arrasto não é iniciado pelos botões de quantidade. A ordem é salva no navegador e é respeitada no CSV e PNG, mesmo com o card recolhido.
 

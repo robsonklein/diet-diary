@@ -1,9 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 async function expectPageBottom(page: import("@playwright/test").Page) {
-  await expect.poll(() => page.evaluate(() =>
-    Math.abs(document.documentElement.scrollHeight - window.innerHeight - window.scrollY),
-  )).toBeLessThan(3);
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Math.abs(
+          document.documentElement.scrollHeight -
+            window.innerHeight -
+            window.scrollY,
+        ),
+      ),
+    )
+    .toBeLessThan(3);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -46,41 +54,69 @@ test.beforeEach(async ({ page }) => {
   await page
     .getByRole("button", { name: "Registrar primeira refeição" })
     .click();
-  await expect(page.getByRole("dialog", { name: "Nova refeição", exact: true })).toHaveClass(/side-drawer/);
+  await expect(
+    page.getByRole("dialog", { name: "Nova refeição", exact: true }),
+  ).toHaveClass(/side-drawer/);
   await page
     .getByRole("button", { name: "Adicionar alimentos", exact: true })
     .click();
   await page.getByRole("button", { name: /Adicionar Banana/ }).click();
   await page.getByRole("button", { name: /Adicionar Café/ }).click();
   await page.getByRole("button", { name: "Concluir" }).click();
-  await expect(page.getByRole("dialog", { name: "Adicionar alimentos", exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole("dialog", { name: "Adicionar alimentos", exact: true }),
+  ).toHaveCount(0);
   await expectPageBottom(page);
 });
 
-test("ações no fim da lista e rolagem após incluir refeições e alimentos", async ({ page }) => {
+test("ações no fim da lista e rolagem após incluir refeições e alimentos", async ({
+  page,
+}) => {
   const actions = page.locator('main > footer[aria-label="Ações do diário"]');
   await expect(actions).toHaveCSS("position", "static");
-  expect((await actions.boundingBox())!.y).toBeGreaterThan((await page.locator("article").last().boundingBox())!.y);
-  await page.getByRole("button", { name: "Adicionar refeição", exact: true }).click();
-  await page.getByRole("button", { name: "Adicionar alimentos", exact: true }).click();
+  expect((await actions.boundingBox())!.y).toBeGreaterThan(
+    (await page.locator("article").last().boundingBox())!.y,
+  );
+  await page
+    .getByRole("button", { name: "Adicionar refeição", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Adicionar alimentos", exact: true })
+    .click();
   await page.getByRole("button", { name: "Concluir" }).click();
   await expect(page.locator("article")).toHaveCount(2);
   await expectPageBottom(page);
 
   // Adicionar na primeira refeição também retorna aos controles no fim do dia.
-  await page.locator("article").first().getByRole("button", { name: "Adicionar alimento", exact: true }).click();
+  await page
+    .locator("article")
+    .first()
+    .getByRole("button", { name: "Adicionar alimento", exact: true })
+    .click();
   await page.getByRole("textbox", { name: "Buscar alimento" }).fill("Banana");
-  await page.getByRole("button", { name: /Aumentar quantidade de Banana/ }).click();
+  await page
+    .getByRole("button", { name: /Aumentar quantidade de Banana/ })
+    .click();
   await page.getByRole("button", { name: "Concluir" }).click();
   await expectPageBottom(page);
 
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.locator("article").first().getByRole("button", { name: "Adicionar alimento", exact: true }).click();
-  await page.getByRole("textbox", { name: "Buscar alimento" }).fill("Meu lanche");
-  await page.getByRole("button", { name: "Adicionar item “Meu lanche”" }).click();
+  await page
+    .locator("article")
+    .first()
+    .getByRole("button", { name: "Adicionar alimento", exact: true })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Buscar alimento" })
+    .fill("Meu lanche");
+  await page
+    .getByRole("button", { name: "Adicionar item “Meu lanche”" })
+    .click();
   await page.getByRole("button", { name: "Fechar", exact: true }).click();
   await expectPageBottom(page);
-  await expect(actions.getByRole("button", { name: "Exportar dia", exact: true })).toBeVisible();
+  await expect(
+    actions.getByRole("button", { name: "Exportar dia", exact: true }),
+  ).toBeVisible();
 });
 
 test("recolher, editar e excluir pelo menu; ordenar com teclado e cancelar", async ({
@@ -93,9 +129,13 @@ test("recolher, editar e excluir pelo menu; ordenar com teclado e cancelar", asy
   await handle.focus();
   await page.keyboard.press("Space");
   await expect(handle).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("Banana na posição 1 de 2.", { exact: true })).toBeAttached();
+  await expect(
+    page.getByText("Banana na posição 1 de 2.", { exact: true }),
+  ).toBeAttached();
   await page.keyboard.press("ArrowDown");
-  await expect(page.getByText("Banana na posição 2 de 2.", { exact: true })).toBeAttached();
+  await expect(
+    page.getByText("Banana na posição 2 de 2.", { exact: true }),
+  ).toBeAttached();
   await page.keyboard.press("Space");
   await expect(list.locator(":scope > li").first()).toContainText("Café");
   await expect(
@@ -135,9 +175,17 @@ test("recolher, editar e excluir pelo menu; ordenar com teclado e cancelar", asy
   ).toContainText("Café");
   await page.reload();
   await expect(page.locator("article")).toContainText("12:30");
-  await expect(page.getByRole("list", { name: "Alimentos de Almoço" }).locator(":scope > li").first()).toContainText("Café");
+  await expect(
+    page
+      .getByRole("list", { name: "Alimentos de Almoço" })
+      .locator(":scope > li")
+      .first(),
+  ).toContainText("Café");
   await page.getByLabel("Opções de Almoço", { exact: true }).click();
   await page.getByRole("button", { name: "Excluir", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Remover refeição?", exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(page.locator("article")).toHaveCount(1);
   await page.getByLabel("Opções de Almoço", { exact: true }).click();
@@ -284,12 +332,17 @@ test("drawer lateral mantém busca no topo e permite item customizado com tela r
     exact: true,
   });
   await expect(drawer).toHaveClass(/side-drawer/);
+  await expect(
+    page.getByRole("textbox", { name: "Buscar alimento" }),
+  ).not.toBeFocused();
   await page.setViewportSize({ width: 1280, height: 900 });
   const panel = drawer.locator(".side-drawer-panel");
-  await expect.poll(async () => {
-    const box = (await panel.boundingBox())!;
-    return Math.abs(box.x + box.width - 1280);
-  }).toBeLessThan(2);
+  await expect
+    .poll(async () => {
+      const box = (await panel.boundingBox())!;
+      return Math.abs(box.x + box.width - 1280);
+    })
+    .toBeLessThan(2);
   await page.setViewportSize({ width: 393, height: 420 });
   const search = page.getByRole("textbox", { name: "Buscar alimento" });
   await search.fill("Meu sanduíche");

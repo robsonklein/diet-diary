@@ -27,7 +27,7 @@ test.beforeEach(async ({ context }) => {
   );
 });
 
-test("reabre aba com registro anterior e só inicia novo dia após confirmação", async ({
+test("reabre registro e altera data preservando refeições", async ({
   page,
   context,
 }) => {
@@ -38,7 +38,7 @@ test("reabre aba com registro anterior e só inicia novo dia após confirmação
     { key, day },
   );
   await page.reload();
-  await expect(page.getByText("Registro salvo", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Editar data do diário" })).toHaveText("Quinta -- 02/01/2020");
   await page.getByRole("button", { name: "Aumentar Meu lanche" }).click();
   await page.close();
   const reopened = await context.newPage();
@@ -49,20 +49,23 @@ test("reabre aba com registro anterior e só inicia novo dia após confirmação
       .locator("output"),
   ).toHaveText("3");
   await expect(reopened.locator("article")).toContainText("08:30");
-  await reopened
-    .getByRole("button", { name: "Iniciar diário de hoje", exact: true })
-    .click();
-  await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
-  await expect(reopened.locator("article")).toHaveCount(1);
-  await reopened
-    .getByRole("button", { name: "Iniciar diário de hoje", exact: true })
-    .click();
-  await reopened
-    .getByRole("button", { name: "Iniciar novo diário", exact: true })
-    .click();
+  await reopened.getByRole("button", { name: "Editar data do diário" }).click();
+  const input = reopened.getByRole("textbox", { name: "Data do diário" });
+  await input.fill("31/02/2026");
+  await input.press("Enter");
+  await expect(reopened.locator("main").getByRole("alert")).toContainText("Informe uma data válida");
+  await input.fill("10/09/2026");
+  await input.press("Enter");
+  await expect(reopened.getByRole("button", { name: "Editar data do diário" })).toHaveText("Quinta -- 10/09/2026");
   await reopened.reload();
-  await expect(reopened.getByText("Hoje", { exact: true })).toBeVisible();
-  await expect(reopened.getByText("Seu dia começa aqui")).toBeVisible();
+  await expect(reopened.getByRole("button", { name: "Editar data do diário" })).toHaveText("Quinta -- 10/09/2026");
+  await expect(reopened.locator("article")).toHaveCount(1);
+  await expect(reopened.getByRole("group", { name: "Quantidade de Meu lanche" }).locator("output")).toHaveText("3");
+  await reopened.getByRole("button", { name: "Editar data do diário" }).click();
+  await input.fill("09/09/2026");
+  await input.press("Escape");
+  await expect(reopened.getByRole("button", { name: "Editar data do diário" })).toHaveText("Quinta -- 10/09/2026");
+
 });
 
 test("registro inválido não quebra a tela nem é sobrescrito ao abrir", async ({

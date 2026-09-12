@@ -29,7 +29,10 @@ export function MobileSheet({
       ref={ref}
       className="modal modal-bottom sm:modal-middle"
       aria-labelledby="sheet-title"
-      onCancel={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
     >
       <div className="modal-box max-h-[88dvh] rounded-t-3xl p-6 sm:rounded-3xl">
         <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-base-300 sm:hidden" />

@@ -12,15 +12,12 @@ import { MobileSheet } from "./MobileSheet";
 import { SideDrawer } from "./SideDrawer";
 import { FoodTypeahead } from "./FoodTypeahead";
 import { ExportActions } from "./ExportActions";
-import { localDate } from "@/lib/diary";
-import { formatDate } from "@/utils/export";
 
 type Sheet =
   | { type: "meal" }
   | { type: "edit"; mealId: string }
   | { type: "food"; mealId: string }
   | { type: "export" }
-  | { type: "new-day" }
   | { type: "remove"; mealId: string }
   | null;
 export function Diary() {
@@ -70,7 +67,7 @@ export function Diary() {
   const itemCount = day.meals.reduce((sum, meal) => sum + meal.items.length, 0);
   return (
     <main className="mx-auto min-h-dvh max-w-2xl px-5 pb-6 sm:px-8">
-      <DiaryHeader date={day.date} />
+      <DiaryHeader date={day.date} onDateChange={(date) => dispatch({ type: "set-date", date })} />
       {storageError && (
         <div
           role="alert"
@@ -78,17 +75,6 @@ export function Diary() {
         >
           <Info size={17} className="mt-0.5 shrink-0 text-primary" />
           <p>{storageError}</p>
-        </div>
-      )}
-      {day.date !== localDate() && (
-        <div className="alert mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
-          <p>Você está continuando o registro de {formatDate(day.date)}.</p>
-          <button
-            className="btn btn-primary min-h-11"
-            onClick={() => setSheet({ type: "new-day" })}
-          >
-            Iniciar diário de hoje
-          </button>
         </div>
       )}
       {loading && (
@@ -250,9 +236,7 @@ export function Diary() {
               ? "Editar refeição"
               : sheet.type === "remove"
                 ? "Remover refeição?"
-                : sheet.type === "new-day"
-                  ? "Iniciar diário de hoje?"
-                  : "Seu dia para levar"
+                : "Seu dia para levar"
           }
           onClose={() => setSheet(null)}
         >
@@ -274,38 +258,6 @@ export function Diary() {
             />
           )}
           {sheet.type === "export" && <ExportActions day={day} />}
-          {sheet.type === "new-day" && (
-            <div className="space-y-5">
-              <p className="text-sm text-base-content/65">
-                O registro de {formatDate(day.date)} será substituído por um
-                diário vazio de hoje. Exporte o registro atual antes de
-                continuar, se quiser guardá-lo.
-              </p>
-              <button
-                className="btn btn-outline min-h-12 w-full"
-                onClick={() => setSheet({ type: "export" })}
-              >
-                Exportar registro atual
-              </button>
-              <div className="flex gap-3">
-                <button
-                  className="btn min-h-12 flex-1"
-                  onClick={() => setSheet(null)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className="btn btn-primary min-h-12 flex-1"
-                  onClick={() => {
-                    dispatch({ type: "new-day", date: localDate() });
-                    setSheet(null);
-                  }}
-                >
-                  Iniciar novo diário
-                </button>
-              </div>
-            </div>
-          )}
           {sheet.type === "remove" && (
             <div>
               <p className="mb-6 text-sm text-base-content/65">

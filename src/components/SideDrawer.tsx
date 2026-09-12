@@ -29,7 +29,8 @@ export function SideDrawer({
     const previous = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
     dialog.showModal();
-    if (focusSearch)
+    // No mobile, não abre o teclado virtual automaticamente sobre o drawer.
+    if (focusSearch && window.matchMedia("(min-width: 640px)").matches)
       dialog
         .querySelector<HTMLInputElement>('input[aria-label="Buscar alimento"]')
         ?.focus({ preventScroll: true });

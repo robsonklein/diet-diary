@@ -12,6 +12,7 @@ export function MealActions({
   onRemove: () => void;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
+  const handledPointerAction = useRef(false);
   function close(restoreFocus = false) {
     if (!ref.current) return;
     ref.current.open = false;
@@ -29,6 +30,23 @@ export function MealActions({
     document.addEventListener("pointerdown", outside);
     return () => document.removeEventListener("pointerdown", outside);
   }, []);
+  function runAction(action: () => void) {
+    close(true);
+    action();
+  }
+  function runPointerAction(action: () => void) {
+    // Em alguns navegadores móveis o blur fecha o <details> antes do click.
+    // O pointerdown ocorre antes dele e garante a abertura do diálogo.
+    handledPointerAction.current = true;
+    runAction(action);
+  }
+  function runClickAction(action: () => void) {
+    if (handledPointerAction.current) {
+      handledPointerAction.current = false;
+      return;
+    }
+    runAction(action);
+  }
   return (
     <details
       ref={ref}
@@ -56,10 +74,8 @@ export function MealActions({
         <li>
           <button
             className="min-h-11"
-            onClick={() => {
-              close(true);
-              onEdit();
-            }}
+            onPointerDown={() => runPointerAction(onEdit)}
+            onClick={() => runClickAction(onEdit)}
           >
             <Pencil size={17} />
             Editar
@@ -68,10 +84,8 @@ export function MealActions({
         <li>
           <button
             className="min-h-11 text-error"
-            onClick={() => {
-              close(true);
-              onRemove();
-            }}
+            onPointerDown={() => runPointerAction(onRemove)}
+            onClick={() => runClickAction(onRemove)}
           >
             <Trash2 size={17} />
             Excluir

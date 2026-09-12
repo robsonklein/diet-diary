@@ -19,6 +19,12 @@ test("restauração valida versão, data real, quantidade e identidades", () => 
   };
   const encode = (value: unknown) => JSON.stringify({ version: 1, day: value });
   assert.deepEqual(parseSavedDiary(encode(day)), day);
+  const retroactive = diaryReducer(day, { type: "set-date", date: "2024-02-28" });
+  assert.equal(retroactive.meals, day.meals);
+  assert.equal(retroactive.date, "2024-02-28");
+  assert.deepEqual(parseSavedDiary(encode(retroactive)), retroactive);
+  assert.ok(diaryToCsv(retroactive).includes("2024-02-28,"));
+  assert.equal(day.date, "2024-02-29");
   assert.throws(() => parseSavedDiary(JSON.stringify({ version: 2, day })));
   assert.throws(() => parseSavedDiary(encode({ ...day, date: "2023-02-29" })));
   assert.throws(() =>

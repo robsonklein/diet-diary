@@ -21,6 +21,7 @@ export function localDate(now = new Date()) {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 export type DiaryAction =
+  | { type: "set-date"; date: string }
   | { type: "new-day"; date: string }
   | { type: "add-meal"; meal: Meal }
   | {
@@ -47,6 +48,8 @@ export function sameMealItem(a: Omit<MealItem, "id">, b: Omit<MealItem, "id">) {
 }
 
 export function diaryReducer(day: DiaryDay, action: DiaryAction): DiaryDay {
+  if (action.type === "set-date")
+    return action.date === day.date ? day : { ...day, date: action.date };
   if (action.type === "new-day") return { date: action.date, meals: [] };
   if (
     action.type === "add-meal" &&
