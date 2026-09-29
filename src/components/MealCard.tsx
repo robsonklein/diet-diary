@@ -55,7 +55,7 @@ export function MealCard({
       <div className="card-body gap-0 p-4 sm:p-6">
         <header className="flex items-center gap-2">
           <button
-            className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-xl text-left focus-visible:outline-2 focus-visible:outline-primary"
+            className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-xl text-start focus-visible:outline-2 focus-visible:outline-primary"
             aria-expanded={expanded}
             aria-controls={contentId}
             aria-label={`${expanded ? "Recolher" : "Expandir"} ${meal.mealTypeName}`}
@@ -68,7 +68,7 @@ export function MealCard({
               <span className="block break-words font-bold">
                 {meal.mealTypeName}
               </span>
-              <span className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-base-content/60">
+              <span className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-base-content/75">
                 <Clock3 size={13} />
                 {meal.time || "Sem horário"}
                 <span className="px-1">·</span>
@@ -139,7 +139,7 @@ export function MealCard({
               </SortableContext>
             </DndContext>
           ) : (
-            <p className="py-5 text-sm text-base-content/55">
+            <p className="py-5 text-pretty text-sm text-base-content/75">
               Sua refeição está pronta para receber alimentos.
             </p>
           )}

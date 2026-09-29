@@ -46,7 +46,7 @@ export function MealForm({
         disabledIds={disabledTypeIds}
       />
       {!typeId && (
-        <p role="status" className="text-sm text-base-content/60">
+        <p role="status" className="text-sm text-base-content/75">
           Todas as refeições já foram adicionadas. Você pode editá-las pelo menu
           do card.
         </p>
@@ -54,10 +54,10 @@ export function MealForm({
       <label className="block">
         <span className="mb-2 block text-sm font-semibold">
           Horário{" "}
-          <span className="font-normal text-base-content/50">(opcional)</span>
+          <span className="font-normal text-base-content/75">(opcional)</span>
         </span>
         <input
-          className="input min-h-12 w-full"
+          className="input min-h-12 w-full text-base sm:text-sm"
           type="time"
           value={time}
           onChange={(event) => setTime(event.target.value)}

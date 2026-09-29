@@ -42,7 +42,7 @@ export function MealItem({
         {...listeners}
         type="button"
         style={{ touchAction: "none" }}
-        className="col-start-1 row-start-1 flex h-11 w-6 cursor-grab items-center justify-center rounded-md text-base-content/30 hover:bg-base-200 hover:text-base-content/60 focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing disabled:opacity-30"
+        className="col-start-1 row-start-1 flex h-11 w-6 cursor-grab items-center justify-center rounded-md text-base-content/60 hover:bg-base-200 hover:text-base-content/75 focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing disabled:opacity-30"
         aria-label={`Arrastar ${item.name} para ordenar`}
         aria-roledescription="alimento ordenável"
         disabled={dragDisabled}
@@ -55,7 +55,7 @@ export function MealItem({
         </div>
         <div className="min-w-0">
           <p className="break-words text-sm font-semibold">{item.name}</p>
-          <p className="mt-0.5 text-xs text-base-content/60">
+          <p className="mt-0.5 text-xs text-base-content/75">
             {item.unit || "Quantidade"}
             {item.isCustom && " · Item customizado"}
           </p>
@@ -70,7 +70,7 @@ export function MealItem({
         />
       </div>
       <button
-        className="btn btn-ghost btn-circle col-start-3 row-start-1 min-h-11 min-w-11 text-base-content/45 sm:col-start-4"
+        className="btn btn-ghost btn-circle col-start-3 row-start-1 min-h-11 min-w-11 text-base-content/60 sm:col-start-4"
         aria-label={`Remover ${item.name}`}
         onClick={onRemove}
       >

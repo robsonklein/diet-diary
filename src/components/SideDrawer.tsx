@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft } from "lucide-react";
+import { X } from "lucide-react";
 
 export function SideDrawer({
   children,
@@ -66,14 +66,14 @@ export function SideDrawer({
             aria-label="Fechar"
             onClick={requestClose}
           >
-            <ArrowLeft size={22} />
+            <X size={22} />
           </button>
           <div className="min-w-0">
             <h2 id={titleId} className="text-xl font-bold">
               {title}
             </h2>
             {subtitle && (
-              <p className="truncate text-sm text-base-content/60">
+              <p className="break-words text-sm text-base-content/75">
                 {subtitle}
               </p>
             )}

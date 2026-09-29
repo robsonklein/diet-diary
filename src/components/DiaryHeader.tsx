@@ -36,15 +36,15 @@ export function DiaryHeader({ date, onDateChange }: {
           </span>
           nutri<span className="text-primary">.</span>
         </div>
-        <span className="ml-auto text-xs text-base-content/50">
+        <span className="ms-auto text-xs text-base-content/75">
           Seu diário alimentar
         </span>
       </nav>
       <header className="py-6">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
           Diário alimentar
         </h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-base-content/60">
+        <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-base-content/75">
           Registre suas refeições diárias de forma prática e eficiente.
         </p>
         <div className="mt-6 flex items-center gap-2.5 border-y border-y-gray-300 py-3">
@@ -57,7 +57,7 @@ export function DiaryHeader({ date, onDateChange }: {
                   aria-label="Data do diário"
                   aria-invalid={!!error}
                   aria-describedby={error ? "diary-date-error" : undefined}
-                  className="input min-w-0 w-36"
+                  className="input min-w-0 w-36 text-base sm:text-sm"
                   type="text"
                   inputMode="numeric"
                   placeholder="DD/MM/AAAA"
@@ -82,7 +82,7 @@ export function DiaryHeader({ date, onDateChange }: {
               type="button"
               title="Editar data"
               aria-label="Editar data do diário"
-              className="min-h-11 text-left text-base font-semibold tracking-tight hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
+              className="min-h-11 text-start text-base font-semibold tracking-tight hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
               onClick={() => { setDraft(formatDate(date)); setError(""); setEditing(true); }}
             >
               {date === localDate() ? `Hoje -- ${weekday} ` : `${weekday} -- `}

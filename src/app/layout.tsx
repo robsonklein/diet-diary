@@ -23,7 +23,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" data-theme="light" className={poppins.className}>
+    <html
+      lang="pt-BR"
+      data-theme="light"
+      className={`${poppins.className} antialiased`}
+    >
       <body>{children}</body>
     </html>
   );

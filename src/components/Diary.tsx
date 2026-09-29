@@ -114,7 +114,7 @@ export function Diary() {
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-base font-bold tracking-tight">
           Suas refeições{" "}
-          <span className="badge badge-sm ml-1 border-none bg-primary/10 text-primary">
+          <span className="badge badge-sm ms-1 border-none bg-primary/10 text-primary">
             {day.meals.length}
           </span>
         </h2>
@@ -149,7 +149,7 @@ export function Diary() {
               }
             />
           ))}
-          <p className="flex items-center justify-center gap-1.5 pt-4 text-xs text-base-content/45">
+          <p className="flex items-center justify-center gap-1.5 pt-4 text-xs text-base-content/75">
             <Check size={14} />
             {itemCount}{" "}
             {itemCount === 1 ? "alimento registrado" : "alimentos registrados"}{" "}
@@ -260,7 +260,7 @@ export function Diary() {
           {sheet.type === "export" && <ExportActions day={day} />}
           {sheet.type === "remove" && (
             <div>
-              <p className="mb-6 text-sm text-base-content/65">
+              <p className="mb-6 text-pretty text-sm text-base-content/75">
                 A refeição e todos os seus alimentos serão removidos deste dia.
               </p>
               <div className="flex gap-3">

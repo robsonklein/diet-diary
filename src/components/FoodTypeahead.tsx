@@ -46,7 +46,7 @@ export function FoodTypeahead({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="shrink-0 px-5 pb-3 pt-4">
         <label className="input min-h-13 w-full rounded-xl">
-          <Search size={19} className="text-base-content/50" />
+          <Search size={19} className="text-base-content/60" />
           <input
             className="text-base"
             aria-label="Buscar alimento"
@@ -56,7 +56,7 @@ export function FoodTypeahead({
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
-        <p className="mt-3 text-xs text-base-content/60" aria-live="polite">
+        <p className="mt-3 text-xs text-base-content/75" aria-live="polite">
           {matches.length}{" "}
           {matches.length === 1
             ? "alimento encontrado"
@@ -70,7 +70,7 @@ export function FoodTypeahead({
             return (
               <li key={food.id}>
                 <button
-                  className="flex min-h-18 w-full items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-primary"
+                  className="flex min-h-18 w-full items-center gap-3 rounded-xl px-2 py-3 text-start hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-primary"
                   onClick={() =>
                     add({
                       foodId: food.id,
@@ -88,7 +88,7 @@ export function FoodTypeahead({
                     <span className="block break-words text-sm font-semibold">
                       {food.name}
                     </span>
-                    <span className="text-xs text-base-content/60">
+                    <span className="text-xs text-base-content/75">
                       {formatQuantity(
                         selected?.quantity ?? food.default_quantity,
                         food.unit,
@@ -115,7 +115,7 @@ export function FoodTypeahead({
           })}
         </ul>
         {!matches.length && (
-          <p className="py-2 text-sm text-base-content/60">
+          <p className="py-2 text-pretty text-sm text-base-content/75">
             {query.trim()
               ? "Nenhum resultado. Você pode adicionar um item customizado abaixo."
               : "O catálogo ainda não tem alimentos. Adicione um item customizado pela busca."}

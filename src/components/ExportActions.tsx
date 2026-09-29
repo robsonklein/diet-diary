@@ -16,7 +16,7 @@ export function ExportActions({ day }: { day: DiaryDay }) {
   const [notice, setNotice] = useState("");
   return (
     <div className="space-y-4">
-      <p className="text-sm leading-relaxed text-base-content/60">
+      <p className="text-pretty text-sm leading-relaxed text-base-content/75">
         Guarde seu registro ou compartilhe com seu nutricionista. O arquivo
         inclui todas as refeições deste dia.
       </p>
@@ -109,9 +109,9 @@ export function ExportActions({ day }: { day: DiaryDay }) {
         }}
       >
         <FileSpreadsheet size={24} className="text-primary" />
-        <span className="flex-1 text-left">
+        <span className="flex-1 text-start">
           Exportar CSV
-          <span className="block text-xs font-normal text-base-content/60">
+          <span className="block text-xs font-normal text-base-content/75">
             Para abrir em uma planilha
           </span>
         </span>
@@ -141,7 +141,7 @@ export function ExportActions({ day }: { day: DiaryDay }) {
         ) : (
           <ImageDown size={24} />
         )}
-        <span className="flex-1 text-left">
+        <span className="flex-1 text-start">
           {busy ? "Preparando imagem…" : "Exportar imagem PNG"}
           <span className="block text-xs font-normal opacity-75">
             Uma versão limpa, pronta para compartilhar

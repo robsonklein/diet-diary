@@ -1,4 +1,4 @@
-import { Plus, Salad, Sprout } from "lucide-react";
+import { Plus, Salad } from "lucide-react";
 
 export function EmptyState({
   onAdd,
@@ -12,8 +12,8 @@ export function EmptyState({
       <div className="relative mb-6 flex size-24 items-center justify-center rounded-full bg-primary/8 text-primary">
         <Salad size={47} strokeWidth={1.25} />       
       </div>
-      <h3 className="text-xl font-semibold">Seu dia começa aqui</h3>
-      <p className="mt-2 max-w-64 text-sm leading-relaxed text-base-content/60">
+      <h3 className="text-balance text-xl font-semibold">Seu dia começa aqui</h3>
+      <p className="mt-2 max-w-64 text-pretty text-sm leading-relaxed text-base-content/75">
         Do primeiro café à última refeição.
         <br />
         Adicione o que você comeu hoje.
