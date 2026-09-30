@@ -23,6 +23,7 @@ export function localDate(now = new Date()) {
 export type DiaryAction =
   | { type: "set-date"; date: string }
   | { type: "new-day"; date: string }
+  | { type: "clear-day" }
   | { type: "add-meal"; meal: Meal }
   | {
       type: "edit-meal";
@@ -51,6 +52,8 @@ export function diaryReducer(day: DiaryDay, action: DiaryAction): DiaryDay {
   if (action.type === "set-date")
     return action.date === day.date ? day : { ...day, date: action.date };
   if (action.type === "new-day") return { date: action.date, meals: [] };
+  if (action.type === "clear-day")
+    return day.meals.length ? { ...day, meals: [] } : day;
   if (
     action.type === "add-meal" &&
     day.meals.some((meal) => meal.mealTypeId === action.meal.mealTypeId)

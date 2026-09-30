@@ -178,3 +178,58 @@ test("erro recuperável e catálogo vazio", async ({ page }) => {
     page.getByRole("button", { name: "Adicionar refeição", exact: true }),
   ).toBeDisabled();
 });
+
+test("limpa todas as refeições somente depois da confirmação", async ({
+  page,
+}) => {
+  await page.route("**/api/catalog", (route) =>
+    route.fulfill({ json: catalog }),
+  );
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem("clear-day-seeded")) return;
+    sessionStorage.setItem("clear-day-seeded", "true");
+    localStorage.setItem(
+      "nutri.diary.v1",
+      JSON.stringify({
+        version: 1,
+        day: {
+          date: "2026-09-29",
+          meals: [
+            {
+              id: "breakfast",
+              mealTypeId: "1",
+              mealTypeName: "Café da manhã",
+              items: [
+                {
+                  id: "coffee",
+                  foodId: "2",
+                  name: "Café",
+                  quantity: 100,
+                  unit: "ml",
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+  });
+  await page.goto("/");
+
+  await page
+    .getByRole("button", { name: "Limpar todas as refeições do dia" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Limpar todas as refeições?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await expect(page.getByText("Café", { exact: true })).toBeVisible();
+
+  await page
+    .getByRole("button", { name: "Limpar todas as refeições do dia" })
+    .click();
+  await page.getByRole("button", { name: "Limpar dia", exact: true }).click();
+  await expect(page.getByText("Seu dia começa aqui")).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("Seu dia começa aqui")).toBeVisible();
+});

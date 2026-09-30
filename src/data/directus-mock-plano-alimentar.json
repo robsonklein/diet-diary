@@ -389,6 +389,166 @@
       "category": "acompanhamento"
     },
     {
+      "id": "whole_wheat_bread",
+      "name": "Pão integral",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Sandwich",
+      "active": true,
+      "sort": 101,
+      "category": "carboidrato"
+    },
+    {
+      "id": "rap10",
+      "name": "Rapi10",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "CircleDot",
+      "active": true,
+      "sort": 102,
+      "category": "carboidrato"
+    },
+    {
+      "id": "lactose_free_cheese",
+      "name": "Queijo zero lactose",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 121,
+      "category": "laticínio"
+    },
+    {
+      "id": "chia",
+      "name": "Chia",
+      "unit": "colher",
+      "default_quantity": 1,
+      "icon_name": "Sprout",
+      "active": true,
+      "sort": 51,
+      "category": "semente"
+    },
+    {
+      "id": "shredded_chicken",
+      "name": "Frango desfiado",
+      "unit": "g",
+      "default_quantity": 100,
+      "icon_name": "Drumstick",
+      "active": true,
+      "sort": 261,
+      "category": "proteína"
+    },
+    {
+      "id": "chicken",
+      "name": "Frango",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Drumstick",
+      "active": true,
+      "sort": 262,
+      "category": "proteína"
+    },
+    {
+      "id": "zero_soda",
+      "name": "Refrigerante zero",
+      "unit": "ml",
+      "default_quantity": 350,
+      "icon_name": "GlassWater",
+      "active": true,
+      "sort": 901,
+      "category": "bebida"
+    },
+    {
+      "id": "french_fries",
+      "name": "Batata frita",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Utensils",
+      "active": true,
+      "sort": 402,
+      "category": "pronto"
+    },
+    {
+      "id": "apple",
+      "name": "Maçã",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Apple",
+      "active": true,
+      "sort": 21,
+      "category": "fruta"
+    },
+    {
+      "id": "kiwi",
+      "name": "Kiwi",
+      "unit": "unidade",
+      "default_quantity": 1,
+      "icon_name": "Circle",
+      "active": true,
+      "sort": 22,
+      "category": "fruta"
+    },
+    {
+      "id": "grape",
+      "name": "Uva",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Grape",
+      "active": true,
+      "sort": 23,
+      "category": "fruta"
+    },
+    {
+      "id": "iceberg_lettuce",
+      "name": "Alface americana",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Leaf",
+      "active": true,
+      "sort": 351,
+      "category": "salada"
+    },
+    {
+      "id": "dulce_de_leche",
+      "name": "Doce de leite",
+      "unit": "colher",
+      "default_quantity": 1,
+      "icon_name": "Milk",
+      "active": true,
+      "sort": 431,
+      "category": "acompanhamento"
+    },
+    {
+      "id": "massa",
+      "name": "Massa",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Utensils",
+      "active": true,
+      "sort": 251,
+      "category": "carboidrato"
+    },
+    {
+      "id": "pizza",
+      "name": "Pizza",
+      "unit": "fatia",
+      "default_quantity": 1,
+      "icon_name": "Pizza",
+      "active": true,
+      "sort": 401,
+      "category": "pronto"
+    },
+    {
+      "id": "brown_rice",
+      "name": "Arroz integral",
+      "unit": "porção",
+      "default_quantity": 1,
+      "icon_name": "Wheat",
+      "active": true,
+      "sort": 201,
+      "category": "carboidrato"
+    },
+    {
       "id": "coffee",
       "name": "Café",
       "unit": "ml",

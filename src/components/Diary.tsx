@@ -1,6 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDownToLine, Check, Info, Plus, RefreshCw } from "lucide-react";
+import {
+  ArrowDownToLine,
+  Check,
+  Info,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 import { useDiary } from "@/hooks/use-diary";
 import { getCatalog } from "@/lib/catalog";
 import type { Catalog } from "@/types/directus";
@@ -19,6 +26,7 @@ type Sheet =
   | { type: "food"; mealId: string }
   | { type: "export" }
   | { type: "remove"; mealId: string }
+  | { type: "clear" }
   | null;
 export function Diary() {
   const { day, dispatch, storageError } = useDiary();
@@ -186,6 +194,15 @@ export function Diary() {
             <span className="hidden sm:inline">Exportar dia</span>
           </button>
         </div>
+        {day.meals.length > 0 && (
+          <button
+            className="btn btn-ghost mt-2 min-h-11 w-full rounded-xl text-error"
+            onClick={() => setSheet({ type: "clear" })}
+          >
+            <Trash2 size={18} />
+            Limpar todas as refeições do dia
+          </button>
+        )}
       </footer>
       {sheet?.type === "food" && catalog && (
         <SideDrawer
@@ -236,6 +253,8 @@ export function Diary() {
               ? "Editar refeição"
               : sheet.type === "remove"
                 ? "Remover refeição?"
+                : sheet.type === "clear"
+                  ? "Limpar todas as refeições?"
                 : "Seu dia para levar"
           }
           onClose={() => setSheet(null)}
@@ -278,6 +297,31 @@ export function Diary() {
                   }}
                 >
                   Remover refeição
+                </button>
+              </div>
+            </div>
+          )}
+          {sheet.type === "clear" && (
+            <div>
+              <p className="mb-6 text-pretty text-sm text-base-content/75">
+                As {day.meals.length} refeições e todos os alimentos registrados
+                neste dia serão removidos. Esta ação não pode ser desfeita.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  className="btn min-h-12 flex-1"
+                  onClick={() => setSheet(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn-error min-h-12 flex-1"
+                  onClick={() => {
+                    dispatch({ type: "clear-day" });
+                    setSheet(null);
+                  }}
+                >
+                  Limpar dia
                 </button>
               </div>
             </div>

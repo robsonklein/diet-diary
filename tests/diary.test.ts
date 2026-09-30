@@ -98,6 +98,30 @@ test("estado isolado: adicionar, alterar e remover sem mutação", () => {
   day = diaryReducer(day, { type: "remove-meal", mealId: "meal" });
   assert.equal(day.meals.length, 0);
 });
+test("limpar o dia remove todas as refeições e preserva a data", () => {
+  const day: DiaryDay = {
+    date: "2026-09-29",
+    meals: [
+      {
+        id: "breakfast",
+        mealTypeId: "breakfast",
+        mealTypeName: "Café da manhã",
+        items: [{ id: "coffee", name: "Café", quantity: 100, unit: "ml" }],
+      },
+      {
+        id: "lunch",
+        mealTypeId: "lunch",
+        mealTypeName: "Almoço",
+        items: [{ id: "rice", name: "Arroz", quantity: 1, unit: "porção" }],
+      },
+    ],
+  };
+  const cleared = diaryReducer(day, { type: "clear-day" });
+  assert.deepEqual(cleared, { date: day.date, meals: [] });
+  assert.equal(day.meals.length, 2);
+  assert.equal(diaryReducer(cleared, { type: "clear-day" }), cleared);
+});
+
 test("CSV preserva acentos, decimais, aspas, quebras e neutraliza fórmulas", () => {
   const csv = diaryToCsv({
     date: "2026-09-09",
