@@ -9,8 +9,8 @@ export function DiaryHeader({ date, onDateChange }: {
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
-  const [error, setError] = useState("");
   const trigger = useRef<HTMLButtonElement>(null);
+  const today = localDate();
   const weekdays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
   const weekday = weekdays[new Date(`${date}T12:00:00`).getDay()];
   const close = () => {
@@ -18,13 +18,8 @@ export function DiaryHeader({ date, onDateChange }: {
     requestAnimationFrame(() => trigger.current?.focus());
   };
   const save = () => {
-    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(draft.trim());
-    const value = match ? `${match[3]}-${match[2]}-${match[1]}` : "";
-    if (!match || Number(match[3]) < 1000 || localDate(new Date(`${value}T12:00:00`)) !== value) {
-      setError("Informe uma data válida no formato DD/MM/AAAA.");
-      return;
-    }
-    onDateChange(value);
+    if (!draft || draft > today) return;
+    onDateChange(draft);
     close();
   };
   return (
@@ -55,26 +50,17 @@ export function DiaryHeader({ date, onDateChange }: {
                 <input
                   autoFocus
                   aria-label="Data do diário"
-                  aria-invalid={!!error}
-                  aria-describedby={error ? "diary-date-error" : undefined}
-                  className="input min-w-0 w-36 text-base sm:text-sm"
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="DD/MM/AAAA"
-                  maxLength={10}
+                  className="input min-w-0 w-40 text-base sm:text-sm"
+                  type="date"
+                  required
+                  max={today}
                   value={draft}
-                  onFocus={(event) => event.target.select()}
-                  onChange={(event) => {
-                    const digits = event.target.value.replace(/\D/g, "").slice(0, 8);
-                    setDraft(digits.replace(/^(\d{2})(\d)/, "$1/$2").replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2"));
-                    setError("");
-                  }}
+                  onChange={(event) => setDraft(event.target.value)}
                   onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); close(); } }}
                 />
                 <button type="submit" className="btn btn-ghost btn-circle" aria-label="Salvar data"><Check size={18} /></button>
                 <button type="button" className="btn btn-ghost btn-circle" aria-label="Cancelar edição da data" onClick={close}><X size={18} /></button>
               </div>
-              {error && <p id="diary-date-error" role="alert" className="mt-1 text-xs text-error">{error}</p>}
             </form>
           ) : (
             <button
@@ -82,11 +68,22 @@ export function DiaryHeader({ date, onDateChange }: {
               type="button"
               title="Editar data"
               aria-label="Editar data do diário"
-              className="min-h-11 text-start text-base font-semibold tracking-tight hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
-              onClick={() => { setDraft(formatDate(date)); setError(""); setEditing(true); }}
+              className="group min-h-11 rounded-lg text-start text-base tracking-tight hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
+              onClick={() => { setDraft(date); setEditing(true); }}
             >
-              {date === localDate() ? `Hoje -- ${weekday} ` : `${weekday} -- `}
-              <time dateTime={date}>{formatDate(date)}</time>
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                {date === today && (
+                  <span className="badge badge-primary badge-sm font-semibold">Hoje</span>
+                )}
+                <span className="font-semibold">{weekday}</span>
+                <span aria-hidden="true" className="h-4 w-px bg-base-content/20" />
+                <time
+                  dateTime={date}
+                  className="font-medium tabular-nums text-base-content/65 group-hover:text-primary/80"
+                >
+                  {formatDate(date)}
+                </time>
+              </span>
             </button>
           )}
           <div
