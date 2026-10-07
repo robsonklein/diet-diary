@@ -17,7 +17,7 @@ Abra http://localhost:3000. Para produção: `npm run build` e `npm start`.
 
 ## Usar o catálogo local
 
-O JSON fornecido está em `src/data/directus-mock-plano-alimentar.json`. A aplicação usa seus 36 alimentos e 6 tipos de refeição com `CATALOG_SOURCE=mock` (também é o padrão quando a variável está ausente). Funciona sem conexão ao Directus: refeições, quantidades, itens customizados e exportações ficam disponíveis normalmente.
+O JSON fornecido está em `src/data/directus-mock-plano-alimentar.json`. A aplicação usa seus 54 alimentos e 6 tipos de refeição com `CATALOG_SOURCE=mock` (também é o padrão quando a variável está ausente). Funciona sem conexão ao Directus: refeições, quantidades, itens customizados e exportações ficam disponíveis normalmente.
 
 O adaptador `src/lib/mock-catalog.ts` filtra alimentos ativos, ordena por `sort`/nome/ID e entrega o mesmo formato usado pela integração. As unidades e quantidades padrão são preservadas. O arquivo nunca é alterado ao montar o diário, que é salvo separadamente no navegador.
 
@@ -86,7 +86,7 @@ Na política pública ou na política associada ao token, permita **somente Read
 - `src/lib/diary.ts` e `src/hooks/use-diary.ts`: reducer puro e estado com salvamento automático, independentes do Directus. `src/lib/diary-storage.ts` valida e recupera os dados locais.
 - `src/components/`: tela e componentes reutilizáveis, sheets, busca, cards e stepper.
 - `src/utils/icons.ts`: mapa explícito de ícones; nomes ausentes/desconhecidos usam `Utensils`. Amplie o mapa para outros ícones do catálogo.
-- `src/utils/export.ts`: CSV com UTF-8 BOM, escaping e proteção contra fórmulas; PNG via `html-to-image`.
+- `src/utils/export.ts`: CSV com UTF-8 BOM, IDs de tipo de refeição e alimento, indicação de refeição fora do plano, escaping e proteção contra fórmulas; PNG via `html-to-image`.
 - `tests/`: testes de estado/exportação e fluxo mobile com API Directus simulada.
 
 Os passos ficam em `QUANTITY_STEPS`: unidade = 1, g = 10, ml = 50; outras unidades = 1. Diminuir nunca produz zero ou número negativo; use remover para excluir um item. A quantidade inicial preserva o valor do catálogo, inclusive decimal. Itens customizados começam em 1. Refeições sem alimentos são preservadas nas exportações.
@@ -96,6 +96,8 @@ A data é capturada no fuso local ao iniciar um diário e preservada ao reabrir.
 ## Salvamento local
 
 Cada alteração de refeições, horários, alimentos, quantidades e ordem é gravada imediatamente na chave `nutri.diary.v1`. A restauração não depende do catálogo estar disponível. Dados inválidos ou armazenamento bloqueado exibem um aviso; o diário continua utilizável em memória e pode ser exportado.
+
+Cada refeição pode ser marcada como **Fora do plano** junto ao título. A indicação é salva com o diário e incluída nas exportações CSV e PNG.
 
 É mantido um único diário por navegador e endereço do site. Não há sincronização entre dispositivos, navegadores ou domínios (localhost, endereço Netlify e domínio próprio têm registros separados). Limpar os dados do site ou encerrar uma sessão privada pode apagar o registro. Em várias abas, prevalece a última alteração salva; as outras abas recuperam esse estado ao recarregar. Use a exportação como cópia de segurança.
 

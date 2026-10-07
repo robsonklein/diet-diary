@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { CircleAlert, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 export function MealActions({
   name,
+  offPlan,
+  onOffPlanChange,
   onEdit,
   onRemove,
 }: {
   name: string;
+  offPlan: boolean;
+  onOffPlanChange: (offPlan: boolean) => void;
   onEdit: () => void;
   onRemove: () => void;
 }) {
@@ -79,6 +83,19 @@ export function MealActions({
           >
             <Pencil size={17} />
             Editar
+          </button>
+        </li>
+        <li>
+          <button
+            className={offPlan ? "min-h-11 bg-warning/15 font-semibold" : "min-h-11"}
+            aria-pressed={offPlan}
+            onPointerDown={() =>
+              runPointerAction(() => onOffPlanChange(!offPlan))
+            }
+            onClick={() => runClickAction(() => onOffPlanChange(!offPlan))}
+          >
+            <CircleAlert size={17} />
+            Fora do plano
           </button>
         </li>
         <li>

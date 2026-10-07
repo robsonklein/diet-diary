@@ -136,6 +136,9 @@ export function Diary() {
               onAddFood={() => setSheet({ type: "food", mealId: meal.id })}
               onEdit={() => setSheet({ type: "edit", mealId: meal.id })}
               onRemove={() => setSheet({ type: "remove", mealId: meal.id })}
+              onOffPlanChange={(offPlan) =>
+                dispatch({ type: "set-off-plan", mealId: meal.id, offPlan })
+              }
               onReorder={(itemId, overId) =>
                 dispatch({
                   type: "reorder-items",

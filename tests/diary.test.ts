@@ -19,6 +19,19 @@ test("restauração valida versão, data real, quantidade e identidades", () => 
   };
   const encode = (value: unknown) => JSON.stringify({ version: 1, day: value });
   assert.deepEqual(parseSavedDiary(encode(day)), day);
+  const marked = {
+    ...day,
+    meals: [{ ...day.meals[0], offPlan: true }],
+  };
+  assert.deepEqual(parseSavedDiary(encode(marked)), marked);
+  assert.throws(() =>
+    parseSavedDiary(
+      encode({
+        ...day,
+        meals: [{ ...day.meals[0], offPlan: "yes" }],
+      }),
+    ),
+  );
   const retroactive = diaryReducer(day, { type: "set-date", date: "2024-02-28" });
   assert.equal(retroactive.meals, day.meals);
   assert.equal(retroactive.date, "2024-02-28");
@@ -122,7 +135,7 @@ test("limpar o dia remove todas as refeições e preserva a data", () => {
   assert.equal(diaryReducer(cleared, { type: "clear-day" }), cleared);
 });
 
-test("CSV preserva acentos, decimais, aspas, quebras e neutraliza fórmulas", () => {
+test("CSV inclui IDs e preserva acentos, decimais, aspas, quebras e fórmulas", () => {
   const csv = diaryToCsv({
     date: "2026-09-09",
     meals: [
@@ -131,15 +144,68 @@ test("CSV preserva acentos, decimais, aspas, quebras e neutraliza fórmulas", ()
         mealTypeId: "1",
         mealTypeName: "Café",
         items: [
-          { id: "1", name: 'Pão, "integral"\ncaseiro', quantity: 1.5 },
+          {
+            id: "1",
+            foodId: "bread",
+            name: 'Pão, "integral"\ncaseiro',
+            quantity: 1.5,
+          },
           { id: "2", name: "=SUM(A1)", quantity: 1 },
         ],
       },
     ],
   });
-  assert.ok(csv.startsWith("\uFEFFdate,meal,time,food,quantity,unit\r\n"));
-  assert.ok(csv.includes('"Pão, ""integral""\ncaseiro",1.5,'));
-  assert.ok(csv.includes("'=SUM(A1)"));
+  assert.ok(
+    csv.startsWith(
+      "\uFEFFdate,meal,time,food,quantity,unit,meal_type_id,food_id,off_plan\r\n",
+    ),
+  );
+  assert.ok(csv.includes('"Pão, ""integral""\ncaseiro",1.5,,1,bread,false'));
+  assert.ok(csv.includes("'=SUM(A1),1,,1,,false"));
+});
+
+test("CSV preserva o tipo de refeição vazia e deixa food_id vazio", () => {
+  const csv = diaryToCsv({
+    date: "2026-09-09",
+    meals: [
+      {
+        id: "meal",
+        mealTypeId: "supper",
+        mealTypeName: "Ceia",
+        time: "21:30",
+        offPlan: true,
+        items: [],
+      },
+    ],
+  });
+  assert.ok(csv.includes("2026-09-09,Ceia,21:30,,,,supper,,true"));
+});
+
+test("marca e desmarca uma refeição como fora do plano sem alterar as demais", () => {
+  const meal: Meal = {
+    id: "breakfast",
+    mealTypeId: "breakfast",
+    mealTypeName: "Café da manhã",
+    items: [],
+  };
+  const initial: DiaryDay = {
+    date: "2026-10-02",
+    meals: [meal, { ...meal, id: "lunch", mealTypeId: "lunch" }],
+  };
+  const marked = diaryReducer(initial, {
+    type: "set-off-plan",
+    mealId: "breakfast",
+    offPlan: true,
+  });
+  assert.equal(marked.meals[0].offPlan, true);
+  assert.equal(marked.meals[1], initial.meals[1]);
+  assert.equal(initial.meals[0].offPlan, undefined);
+  const unmarked = diaryReducer(marked, {
+    type: "set-off-plan",
+    mealId: "breakfast",
+    offPlan: false,
+  });
+  assert.equal(unmarked.meals[0].offPlan, false);
 });
 test("data local e unidades em português", () => {
   assert.equal(localDate(new Date(2026, 8, 9, 23, 59)), "2026-09-09");

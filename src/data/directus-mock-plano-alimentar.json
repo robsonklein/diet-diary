@@ -459,6 +459,26 @@
       "category": "bebida"
     },
     {
+      "id": "coca_zero",
+      "name": "Coca Zero",
+      "unit": "ml",
+      "default_quantity": 350,
+      "icon_name": "GlassWater",
+      "active": true,
+      "sort": 902,
+      "category": "bebida"
+    },
+    {
+      "id": "beer",
+      "name": "Cerveja",
+      "unit": "ml",
+      "default_quantity": 350,
+      "icon_name": "GlassWater",
+      "active": true,
+      "sort": 903,
+      "category": "bebida"
+    },
+    {
       "id": "french_fries",
       "name": "Batata frita",
       "unit": "porção",

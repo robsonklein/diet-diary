@@ -31,6 +31,7 @@ export type DiaryAction =
       changes: Pick<Meal, "mealTypeId" | "mealTypeName" | "iconName" | "time">;
     }
   | { type: "remove-meal"; mealId: string }
+  | { type: "set-off-plan"; mealId: string; offPlan: boolean }
   | { type: "add-item"; mealId: string; item: MealItem }
   | { type: "remove-item"; mealId: string; itemId: string }
   | { type: "reorder-items"; mealId: string; itemId: string; overId: string }
@@ -80,6 +81,10 @@ export function diaryReducer(day: DiaryDay, action: DiaryAction): DiaryDay {
     meals: day.meals.map((meal) => {
       if (meal.id !== action.mealId) return meal;
       if (action.type === "edit-meal") return { ...meal, ...action.changes };
+      if (action.type === "set-off-plan")
+        return meal.offPlan === action.offPlan
+          ? meal
+          : { ...meal, offPlan: action.offPlan };
       if (action.type === "reorder-items") {
         const from = meal.items.findIndex((item) => item.id === action.itemId);
         const to = meal.items.findIndex((item) => item.id === action.overId);

@@ -6,19 +6,39 @@ export function formatDate(date: string) {
 export function formatQuantity(quantity: number, unit?: string) {
   return `${quantity.toLocaleString("pt-BR")}${unit ? ` ${unit === "unidade" && quantity !== 1 ? "unidades" : unit}` : ""}`;
 }
-function csvCell(value: string | number): string {
+function csvCell(value: string | number | boolean): string {
   let text = String(value);
   // Neutraliza fórmulas ao abrir texto livre em planilhas.
   if (/^[\s]*[=+@-]/.test(text) || /^[\t\r\n]/.test(text)) text = `'${text}`;
   return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 export function diaryToCsv(day: DiaryDay) {
-  const rows: (string | number)[][] = [
-    ["date", "meal", "time", "food", "quantity", "unit"],
+  const rows: (string | number | boolean)[][] = [
+    [
+      "date",
+      "meal",
+      "time",
+      "food",
+      "quantity",
+      "unit",
+      "meal_type_id",
+      "food_id",
+      "off_plan",
+    ],
   ];
   for (const meal of day.meals) {
     if (!meal.items.length)
-      rows.push([day.date, meal.mealTypeName, meal.time ?? "", "", "", ""]);
+      rows.push([
+        day.date,
+        meal.mealTypeName,
+        meal.time ?? "",
+        "",
+        "",
+        "",
+        meal.mealTypeId,
+        "",
+        meal.offPlan ?? false,
+      ]);
     for (const item of meal.items)
       rows.push([
         day.date,
@@ -27,6 +47,9 @@ export function diaryToCsv(day: DiaryDay) {
         item.name,
         item.quantity,
         item.unit ?? "",
+        meal.mealTypeId,
+        item.foodId ?? "",
+        meal.offPlan ?? false,
       ]);
   }
   return "\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n");

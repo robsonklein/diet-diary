@@ -119,6 +119,28 @@ test("ações no fim da lista e rolagem após incluir refeições e alimentos", 
   ).toBeVisible();
 });
 
+test("marca a refeição fora do plano e preserva a indicação", async ({ page }) => {
+  const options = page.getByLabel("Opções de Café da manhã", { exact: true });
+  await options.click();
+  const offPlan = page.getByRole("button", { name: "Fora do plano" });
+  await offPlan.click();
+  await expect(page.getByTitle("Fora do plano")).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Recolher Café da manhã, fora do plano",
+    }),
+  ).toBeVisible();
+
+  await options.click();
+  await expect(offPlan).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await page.getByLabel("Opções de Café da manhã", { exact: true }).click();
+  await expect(page.getByRole("button", { name: "Fora do plano" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+});
+
 test("recolher, editar e excluir pelo menu; ordenar com teclado e cancelar", async ({
   page,
 }) => {

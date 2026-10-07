@@ -33,6 +33,7 @@ function validMeal(value: unknown): value is Meal {
     text(value.mealTypeId) &&
     text(value.mealTypeName) &&
     optionalText(value.iconName) &&
+    (value.offPlan === undefined || typeof value.offPlan === "boolean") &&
     (value.time === undefined ||
       (typeof value.time === "string" &&
         /^([01]\d|2[0-3]):[0-5]\d$/.test(value.time))) &&

@@ -5,6 +5,7 @@ export type Meal = {
   mealTypeName: string;
   iconName?: string;
   time?: string;
+  offPlan?: boolean;
   items: MealItem[];
 };
 export type MealItem = {

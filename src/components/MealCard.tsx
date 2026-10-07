@@ -1,6 +1,6 @@
 "use client";
 import { useId, useState } from "react";
-import { ChevronDown, Clock3, Plus } from "lucide-react";
+import { ChevronDown, CircleAlert, Clock3, Plus } from "lucide-react";
 import {
   closestCenter,
   DndContext,
@@ -24,6 +24,7 @@ export function MealCard({
   onAddFood,
   onEdit,
   onRemove,
+  onOffPlanChange,
   onRemoveItem,
   onQuantity,
   onReorder,
@@ -32,6 +33,7 @@ export function MealCard({
   onAddFood: () => void;
   onEdit: () => void;
   onRemove: () => void;
+  onOffPlanChange: (offPlan: boolean) => void;
   onRemoveItem: (id: string) => void;
   onQuantity: (id: string, direction: 1 | -1) => void;
   onReorder: (itemId: string, overId: string) => void;
@@ -58,15 +60,23 @@ export function MealCard({
             className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-xl text-start focus-visible:outline-2 focus-visible:outline-primary"
             aria-expanded={expanded}
             aria-controls={contentId}
-            aria-label={`${expanded ? "Recolher" : "Expandir"} ${meal.mealTypeName}`}
+            aria-label={`${expanded ? "Recolher" : "Expandir"} ${meal.mealTypeName}${meal.offPlan ? ", fora do plano" : ""}`}
             onClick={() => setExpanded((value) => !value)}
           >
             <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <CatalogIcon name={meal.iconName} size={23} strokeWidth={1.6} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block break-words font-bold">
-                {meal.mealTypeName}
+              <span className="flex items-center gap-2 font-bold">
+                <span className="min-w-0 break-words">{meal.mealTypeName}</span>
+                {meal.offPlan && (
+                  <span
+                    className="flex size-6 shrink-0 items-center justify-center rounded-full bg-warning text-warning-content"
+                    title="Fora do plano"
+                  >
+                    <CircleAlert size={15} strokeWidth={2} aria-hidden="true" />
+                  </span>
+                )}
               </span>
               <span className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-base-content/75">
                 <Clock3 size={13} />
@@ -85,6 +95,8 @@ export function MealCard({
           </button>
           <MealActions
             name={meal.mealTypeName}
+            offPlan={!!meal.offPlan}
+            onOffPlanChange={onOffPlanChange}
             onEdit={onEdit}
             onRemove={onRemove}
           />

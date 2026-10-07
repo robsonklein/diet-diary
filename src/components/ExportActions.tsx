@@ -69,10 +69,37 @@ export function ExportActions({ day }: { day: DiaryDay }) {
               overflowWrap: "anywhere",
             }}
           >
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 12px" }}>
-              {meal.mealTypeName.toLocaleUpperCase("pt-BR")}
-              {meal.time ? ` — ${meal.time}` : ""}
-            </h3>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 10,
+                margin: "0 0 12px",
+              }}
+            >
+              <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>
+                {meal.mealTypeName.toLocaleUpperCase("pt-BR")}
+                {meal.time ? ` — ${meal.time}` : ""}
+              </h3>
+              {meal.offPlan && (
+                <p
+                  style={{
+                    margin: 0,
+                    padding: "5px 10px",
+                    borderRadius: 8,
+                    background: "#fff4d6",
+                    color: "#704f00",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    letterSpacing: 0.4,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  FORA DO PLANO
+                </p>
+              )}
+            </div>
             {meal.items.length ? (
               meal.items.map((item) => (
                 <p key={item.id} style={{ margin: "7px 0" }}>
